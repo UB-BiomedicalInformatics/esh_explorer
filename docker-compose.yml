@@ -132,9 +132,9 @@ services:
       KEYCLOAK_AUTH_URL: http://osler.compbio.buffalo.edu/keycloak
       webprotege.gwt-api-gateway.endPoint: http://webprotege-gwt-api-gateway:7777
       webprotege.websocketUrl: wss://osler.compbio.buffalo.edu/wsapps
-      webprotege.logoutUrl: http://osler.compbio.buffalo.edu/webprotege/logout
-      webprotege.fileUploadurl: http://osler.compbio.buffalo.edu
-      webprotege.keycloakLogoutUrl: http://osler.compbio.buffalo.edu/keycloak-admin/realms/webprotege/protocol/openid-connect/logout
+      webprotege.logoutUrl: https://osler.compbio.buffalo.edu/webprotege/logout
+      webprotege.fileUploadurl: https://osler.compbio.buffalo.edu
+      webprotege.keycloakLogoutUrl: https://osler.compbio.buffalo.edu/keycloak-admin/realms/webprotege/protocol/openid-connect/logout
       webprotege.rabbit.timeout: 300000
       JDK_JAVA_OPTIONS: --add-opens java.base/sun.net=ALL-UNNAMED
       _JAVA_OPTIONS: >
@@ -194,7 +194,7 @@ services:
     environment:
       JDK_JAVA_OPTIONS: --add-opens java.base/sun.net=ALL-UNNAMED
       SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/webprotege"
-      webprotege.keycloak.serverUrl: http://osler.compbio.buffalo.edu/keycloak
+      webprotege.keycloak.serverUrl: https://osler.compbio.buffalo.edu/keycloak
       webprotege.keycloak.clientId: user-management
       LOGGING_LEVEL_ROOT: INFO
     logging:
@@ -217,7 +217,7 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      webprotege.keycloak.serverUrl: http://osler.compbio.buffalo.edu/keycloak
+      webprotege.keycloak.serverUrl: https://osler.compbio.buffalo.edu/keycloak
       LOGGING_LEVEL_ROOT: INFO
       LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_MONGODB_CORE_MONGOTEMPLATE: INFO
       LOGGING_LEVEL_ORG_MONGODB_DRIVER: INFO
