@@ -1232,7 +1232,7 @@
       "description": "Represents the WebProtégé UI",
       "rootUrl": "",
       "adminUrl": "",
-      "baseUrl": "https://osler.compbio.buffalo.edu/keycloak",
+      "baseUrl": "http://osler.compbio.buffalo.edu/keycloak",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": true,
@@ -1248,7 +1248,6 @@
         "https://osler.compbio.buffalo.edu/webprotege/*"
       ],
       "webOrigins": [
-        "http://localhost:8080",
         "http://osler.compbio.buffalo.edu.edu",
         "https://osler.compbio.buffalo.edu.edu"
       ],
@@ -2866,7 +2865,7 @@
     "oauth2DeviceCodeLifespan": "600",
     "parRequestUriLifespan": "60",
     "clientSessionMaxLifespan": "0",
-    "frontendUrl": "https://osler.compbio.buffalo.edu/keycloak",
+    "frontendUrl": "http://osler.compbio.buffalo.edu/keycloak",
     "acr.loa.map": "{}",
     "adminEventsExpiration": "",
     "darkMode": "false"

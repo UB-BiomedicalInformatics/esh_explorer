@@ -99,19 +99,24 @@ services:
       webprotege.minio.accessKey: webprotege
       webprotege.minio.secretKey: webprotege
       webprotege.minio.endPoint: http://minio:9000
-      SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: https://osler.compbio.buffalo.edu/keycloak/realms/webprotege
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://osler.compbio.buffalo.edu/keycloak/realms/webprotege
+      SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: http://osler.compbio.buffalo.edu/keycloak/realms/webprotege
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://osler.compbio.buffalo.edu/keycloak/realms/webprotege
       spring.servlet.multipart.max-file-size: 300MB
       spring.servlet.multipart.max-request-size: 300MB
       webprotege.rabbit.timeout: 600000
       _JAVA_OPTIONS: >
         -Xdebug
         -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008
+        -Dtrust_all_cert=true
+      USE_SYSTEM_CA_CERTS: 1 
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+    command: echo $JAVA_HOME
+    volumes:
+      - ./osler.compbio.buffalo.edu.crt:/opt/java/openjdk/lib/security/cacerts/osler.compbio.buffalo.edu.crt
     networks:
       - elk
 
@@ -132,9 +137,9 @@ services:
       KEYCLOAK_AUTH_URL: http://osler.compbio.buffalo.edu/keycloak
       webprotege.gwt-api-gateway.endPoint: http://webprotege-gwt-api-gateway:7777
       webprotege.websocketUrl: wss://osler.compbio.buffalo.edu/wsapps
-      webprotege.logoutUrl: https://osler.compbio.buffalo.edu/webprotege/logout
-      webprotege.fileUploadurl: https://osler.compbio.buffalo.edu
-      webprotege.keycloakLogoutUrl: https://osler.compbio.buffalo.edu/keycloak-admin/realms/webprotege/protocol/openid-connect/logout
+      webprotege.logoutUrl: http://osler.compbio.buffalo.edu/webprotege/logout
+      webprotege.fileUploadurl: http://osler.compbio.buffalo.edu
+      webprotege.keycloakLogoutUrl: http://osler.compbio.buffalo.edu/keycloak-admin/realms/webprotege/protocol/openid-connect/logout
       webprotege.rabbit.timeout: 300000
       JDK_JAVA_OPTIONS: --add-opens java.base/sun.net=ALL-UNNAMED
       _JAVA_OPTIONS: >
@@ -194,7 +199,7 @@ services:
     environment:
       JDK_JAVA_OPTIONS: --add-opens java.base/sun.net=ALL-UNNAMED
       SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/webprotege"
-      webprotege.keycloak.serverUrl: https://osler.compbio.buffalo.edu/keycloak
+      webprotege.keycloak.serverUrl: http://osler.compbio.buffalo.edu/keycloak
       webprotege.keycloak.clientId: user-management
       LOGGING_LEVEL_ROOT: INFO
     logging:
@@ -217,7 +222,7 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      webprotege.keycloak.serverUrl: https://osler.compbio.buffalo.edu/keycloak
+      webprotege.keycloak.serverUrl: http://osler.compbio.buffalo.edu/keycloak
       LOGGING_LEVEL_ROOT: INFO
       LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_MONGODB_CORE_MONGOTEMPLATE: INFO
       LOGGING_LEVEL_ORG_MONGODB_DRIVER: INFO
@@ -402,7 +407,6 @@ services:
       - ./nginx/osler.compbio.buffalo.edu.key:/etc/nginx/osler.compbio.buffalo.edu.key
     ports:
       - 80:80
-      - 443:443
     depends_on:
       - webprotege-gwt-ui-server
       - keycloak
