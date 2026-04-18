@@ -616,7 +616,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "alcsial3ifVHn5wTlrIxXGOmKp743vd8",
       "redirectUris": [
         "/*"
       ],
@@ -790,7 +790,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "alcsial3ifVHn5wTlrIxXGOmKp743vd8",
       "redirectUris": [],
       "webOrigins": [],
       "notBefore": 0,
@@ -942,7 +942,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "alcsial3ifVHn5wTlrIxXGOmKp743vd8",
       "redirectUris": [
         "*"
       ],
@@ -1167,7 +1167,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "alcsial3ifVHn5wTlrIxXGOmKp743vd8",
       "redirectUris": [
         "/*"
       ],
@@ -1232,7 +1232,7 @@
       "description": "Represents the WebProtégé UI",
       "rootUrl": "",
       "adminUrl": "",
-      "baseUrl": "http://osler.compbio.buffalo.edu/keycloak",
+      "baseUrl": "https://osler.compbio.buffalo.edu/keycloak",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": true,
@@ -2865,7 +2865,7 @@
     "oauth2DeviceCodeLifespan": "600",
     "parRequestUriLifespan": "60",
     "clientSessionMaxLifespan": "0",
-    "frontendUrl": "http://osler.compbio.buffalo.edu/keycloak",
+    "frontendUrl": "https://osler.compbio.buffalo.edu/keycloak",
     "acr.loa.map": "{}",
     "adminEventsExpiration": "",
     "darkMode": "false"
