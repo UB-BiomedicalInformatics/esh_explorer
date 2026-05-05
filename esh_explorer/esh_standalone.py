@@ -657,4 +657,4 @@ def esh_search():
     return ESH_TEMPLATE.replace("_SUBTREES_",subtree_options).replace("esh_details",esh_details).replace("TTTTRRRREEEE",bstring).replace("_DUPES_",dup_string).replace("_ADDITIONAL_SCRIPT_","").replace("_HIDDEN_DETAILS_",hidden_options).replace("TEST",text).replace("_SELECTED_POWERFORM_SECTIONS_",selected_options).replace("_UNSELECTED_POWERFORM_SECTIONS_",unselected_options).replace("BBBBOOOOLLLLDDD",yellowen_parents(event_sets,[]) + bolden_parents(search_codes,[])).replace("_ESH_",grouper_outputs)
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=8888)
+    app.run(debug=True, host='0.0.0.0', port=8887)
