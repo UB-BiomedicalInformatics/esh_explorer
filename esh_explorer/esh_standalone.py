@@ -254,9 +254,12 @@ body, html {
 </style>
 </head>
 <header>
-	<h1>ESH Explorer</h1>
 </header>
 <body>
+    <button onclick="toggle_whole()" style="display:block" class="whole_panel" >Show Search</button>
+    <button onclick="toggle_whole()" style="display:none" class="whole_panel" >Hide Search</button>
+    <div class="whole_panel" style="display:none">
+	<h1>ESH Explorer</h1>
 The ESH Explorer is a tool for finding the proper location for a newly proposed Event Set within the
 Event Set Hierarchy and to discover if there is already an existing Event Set that covers the same
 basic concept.</br></br>
@@ -316,14 +319,18 @@ _DUPES_
         </table>
     </div>
     <br>
-    <button onclick="toggle_bottom()" style="display:flex" class="bottom_panel" >Hide Analysis</button>
-    <button onclick="toggle_bottom()" style="display:none" class="bottom_panel" >Show Analysis</button>
-    <div class="bottom_panel">
+    <button onclick="toggle_bottom()" style="display:none" class="bottom_panel" >Hide Analysis</button>
+    <button onclick="toggle_bottom()" style="display:flex" class="bottom_panel" >Show Analysis</button>
+    <div class="bottom_panel" style="display:none;">
         <div class="display_panel">
             _ESH_
         </div class="display_panel">
-    </div class="bottom_panel">
-    <div>
+    </div>
+  </div>
+    <div style="max-width:1200px width:100%; height:100%;">
+      <iframe id="webprotege" src="https://osler.compbio.buffalo.edu/webprotege" style="max-width:1200px width:100%; height:100%;"></iframe>
+    </div>
+    
 
   <script>
 
@@ -380,7 +387,23 @@ function toggle_bottom(){
     }
 }
 
+function toggle_whole(){
+    const elements = document.getElementsByClassName('whole_panel');
+    for (let el of elements) {
+        if (el.style.display == 'none') {
+            el.style.display = 'block';
+        } 
+        else{
+          el.style.display = 'none';
+        }
+    }
+}
+
 function show_grouper(elementId){
+   
+    const e = String(elementId)
+    const url = "https://osler.compbio.buffalo.edu/webprotege//#projects/34d96442-3799-4dbc-8551-1d2942c81c08/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + e + "%3E)"
+
     const elements = document.getElementsByClassName('grouper');
     for (let el of elements) {
         el.style.display = 'none';
@@ -388,6 +411,11 @@ function show_grouper(elementId){
     const element = document.getElementById(elementId);
     if (element) {
         element.style.display = 'block';
+    }
+    const wp = document.getElementById('webprotege');
+    if (wp) {
+      alert(wp.src)
+      wp.src = url;
     }
 
 }
