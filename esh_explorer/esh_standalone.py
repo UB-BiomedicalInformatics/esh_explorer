@@ -327,8 +327,8 @@ _DUPES_
         </div class="display_panel">
     </div>
   </div>
-    <div style="max-width:1200px width:100%; height:100%;">
-      <iframe id="webprotege" src="https://osler.compbio.buffalo.edu/webprotege" style="max-width:1200px width:100%; height:100%;"></iframe>
+    <div style="width:100vw; height:100%;">
+      <iframe id="webprotege" src="https://osler.compbio.buffalo.edu/webprotege" style="width:100%; height:100%;"></iframe>
     </div>
     
 
@@ -414,7 +414,6 @@ function show_grouper(elementId){
     }
     const wp = document.getElementById('webprotege');
     if (wp) {
-      alert(wp.src)
       wp.src = url;
     }
 
@@ -491,7 +490,7 @@ def get_groupers_list(groupers_list,sub_tree):
         l = " < ".join(o)
         o.reverse()
         m = " > ".join(o)
-        link = "<a onclick=\"show_grouper('" + p[0] + "')\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + p[0] + "%3E)\">" + p[0] + "</a>"
+        link = "<a onclick=\"show_grouper('" + p[0] + "')\" href=\"#\" >" + p[0] + "</a>"
         output += "<tr>"
         output += "<th>" + link + "</th><th>" + grouper_value + "</th><th style=\"text-align: left;\"><div style=\"margin: 4px 2px; border:none; background-color:AliceBlue; cursor:pointer\" class=\"mybutton\" >" + l + "</div>"
         output += "<div style=\"display: none; margin: 4px 2px; border:none; background-color:AliceBlue; cursor:pointer\" class=\"mybutton\" type=\"submit\">" + m + "</div></th>\n"
@@ -525,7 +524,7 @@ def get_dupes_list(dups,subtree):
         l = " < ".join(o)
         o.reverse()
         m = " > ".join(o)
-        link = "<a onclick=\"show_grouper('" + p[4]  + "')\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + p[0] + "%3E)\">" + p[0] + "</a>"
+        link = "<a onclick=\"show_grouper('" + p[4] + "')\" href=\"#\" >" + p[0] + "</a>"
         output += "<tr>"
         output += "<th>" + link + "</th><th style=\"text-align: left;\"><div style=\"margin: 4px 2px; border:none; background-color:HoneyDew; cursor:pointer\" class=\"mybutton\" >" + l + "</div>\n"
         output += "<div style=\"display: none; margin: 4px 2px; border:none; background-color:HoneyDew; cursor:pointer\" class=\"mybutton\" >" + m + "</div></th>"
