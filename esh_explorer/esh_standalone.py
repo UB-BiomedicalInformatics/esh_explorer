@@ -304,9 +304,8 @@ basic concept.</br></br>
     </div>	
     <div>
     <h2>Identified Possible Groupers</h2>
-        To use links to web protege please go <a target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege/#projects/34d96442-3799-4dbc-8551-1d2942c81c08/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b\">here</a> to log in. 
     <br/>
-    <table><tr><th>webprotege link</th><th>confidence</th><th>hierarchy</th></tr>
+    <table><tr><th>link</th><th>confidence</th><th>hierarchy</th></tr>
 esh_details
 </table>
     (Possible groupers appear in red text below.)
@@ -314,7 +313,7 @@ esh_details
     <div>
         <h2>Identified Possible Duplicates</h2>
         <table>
-        <tr><th>display button</th><th>webprotege link</th><th>hierarchy</th></tr>
+        <tr><th>display button</th><th>link</th><th>hierarchy</th></tr>
 _DUPES_
         </table>
     </div>
@@ -327,8 +326,8 @@ _DUPES_
         </div class="display_panel">
     </div>
   </div>
-    <div style="width:100vw; height:100%;">
-      <iframe id="webprotege" src="https://osler.compbio.buffalo.edu/webprotege" style="width:100%; height:100%;"></iframe>
+    <div style="width:100vw; height:95vw;">
+      <iframe id="webprotege" src="https://osler.compbio.buffalo.edu/webprotege//#projects/34d96442-3799-4dbc-8551-1d2942c81c08/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC3995585%3E)" style="width:100%; height:100%;"></iframe>
     </div>
     
 
