@@ -326,7 +326,7 @@ _DUPES_
         </div class="display_panel">
     </div>
   </div>
-    <div style="width:100vw; height:95vw;">
+    <div style="width:100vw; height:95vh;">
       <iframe id="webprotege" src="https://osler.compbio.buffalo.edu/webprotege//#projects/34d96442-3799-4dbc-8551-1d2942c81c08/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC3995585%3E)" style="width:100%; height:100%;"></iframe>
     </div>
     
