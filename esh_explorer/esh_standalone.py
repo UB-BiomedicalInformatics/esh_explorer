@@ -12,20 +12,13 @@ from flask import request
 
 app = Flask(__name__)
 
-print("dependencies")
-
-
-
 #response = requests.get("https://google.com")
 response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_tree_top_descriptions")
 TREE_TOP_DESCRIPTIONS = response.json()
-print(TREE_TOP_DESCRIPTIONS)
-
 
 
 response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_esh_fulls")
 ESH_FULLS = response.json()
-print("here")
 
 
 
@@ -41,7 +34,6 @@ FULL_GROUPER_VALUES = response.json()
 response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_esh_children")
 CHILDREN,PARENTS = response.json()
 
-print("!!!!!!!!!!!!!!")
 
 ESH_PRIMARY = "34d96442-3799-4dbc-8551-1d2942c81c08"
 SECTION_NAMES = list(R_SECTION_DESCRIPTIONS.keys())
@@ -138,6 +130,9 @@ BBBBOOOOLLLLDDDD
   cursor: pointer;
 }
 
+td, th {
+  white-space: nowrap;
+}
 
 .box {
   cursor: pointer;
@@ -173,7 +168,7 @@ div.mycontainer {
 }
 
 div.search_panel {
-  width:100%;
+  width:450px;
   overflow:auto;
 }
 div.bottom_panel {
@@ -296,7 +291,9 @@ basic concept.</br></br>
 		<div style="display: block;">
            	<button style="display: block;" type="submit">Find Suggested Groupers and Possible Event Set Duplicates</button>
 		</div>
-    </div class="search_panel">
+      </div>
+    </div">
+  </form>
     <br>
     <div>
 	 <input type="button" class="mybutton" onclick="toggle_esh()" value=">>">
@@ -317,15 +314,16 @@ esh_details
         <tr><th>display button</th><th>webprotege link</th><th>hierarchy</th></tr>
 _DUPES_
         </table>
-        (Possible duplicates highlighted in yellow below.)
     </div>
     <br>
+    <button onclick="toggle_bottom()" style="display:flex" class="bottom_panel" >Hide Analysis</button>
+    <button onclick="toggle_bottom()" style="display:none" class="bottom_panel" >Show Analysis</button>
     <div class="bottom_panel">
         <div class="display_panel">
             _ESH_
         </div class="display_panel">
     </div class="bottom_panel">
-  </form>
+    <div>
 
   <script>
 
@@ -370,6 +368,18 @@ function toggle_esh(){
 	});
 }
 
+function toggle_bottom(){
+    const elements = document.getElementsByClassName('bottom_panel');
+    for (let el of elements) {
+        if (el.style.display == 'none') {
+            el.style.display = 'flex';
+        } 
+        else{
+          el.style.display = 'none';
+        }
+    }
+}
+
 function show_grouper(elementId){
     const elements = document.getElementsByClassName('grouper');
     for (let el of elements) {
@@ -381,6 +391,7 @@ function show_grouper(elementId){
     }
 
 }
+
 
   </script>
 </body>
@@ -433,12 +444,6 @@ def get_groupers_list(groupers_list,sub_tree):
     corrected_groupers_list = convert_grouper_certainties(groupers_list)
     for grouper_entry in corrected_groupers_list:
         grouper = grouper_entry[0]
-        print("!!!")
-        print("!!!")
-        print("!!!")
-        print("!!!")
-        print("!!!")
-        print(grouper_entry[-1])
         grouper_value = str(grouper_entry[-1])
         print(grouper_value)
         subtree_and_results = None
@@ -469,6 +474,7 @@ def get_groupers_list(groupers_list,sub_tree):
 
 def get_dupes_list(dups,subtree):
     output = ""
+    groupers = []
     for dup in dups:
         if not dup in ESH_FULLS:
             continue
@@ -491,13 +497,14 @@ def get_dupes_list(dups,subtree):
         l = " < ".join(o)
         o.reverse()
         m = " > ".join(o)
-        link = "<a onclick=\"show_grouper('" + p[0] + "')\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + p[0] + "%3E)\">" + p[0] + "</a>"
+        link = "<a onclick=\"show_grouper('" + p[4]  + "')\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + p[0] + "%3E)\">" + p[0] + "</a>"
         output += "<tr>"
         output += "<th>" + link + "</th><th style=\"text-align: left;\"><div style=\"margin: 4px 2px; border:none; background-color:HoneyDew; cursor:pointer\" class=\"mybutton\" >" + l + "</div>\n"
         output += "<div style=\"display: none; margin: 4px 2px; border:none; background-color:HoneyDew; cursor:pointer\" class=\"mybutton\" >" + m + "</div></th>"
         output += "</tr>"
     
-    return output
+    return [output,groupers]
+
 HIDDEN_SUBTREE = '''<input type="hidden" name="hidden_subtree" value="VALUE">'''
 
 def get_subtree_options(selected_tree):
@@ -537,6 +544,12 @@ def get_selected_and_unselected_options(pfs_names):
         if not name in pfs_names:
             unselected_options += "<option id=\"" + R_SECTION_DESCRIPTIONS[name] + "\">" + name + "</option>"   
     return selected_options, unselected_options,hidden_selected
+
+def get_pfs_codes(pfs_names):
+    output = []
+    for name in pfs_names:
+        output.append(R_SECTION_DESCRIPTIONS[name])
+    return output
         
 
 @app.route("/",methods=["GET","POST"])
@@ -555,10 +568,12 @@ def esh_search():
         text = request.form["text"]
         post_obj["text"] = text
     if "leftValues" in request.form:
-        pf_names = request.form["left_values"]
+        print(request)
+        pf_names = request.form.getlist("leftValues")
+        print(pf_names)
         post_obj["powerforms"] = pf_names
     if "hidden_selected" in request.form:
-        hidden_names = request.form["hidden_selected"]
+        hidden_names = request.form.getlist("hidden_selected")
     if "hidden_subtree" in request.form:
         hidden_subtree = request.form["hidden_subtree"]
     if "clear" in request.form:
@@ -577,6 +592,7 @@ def esh_search():
         pf_names = []
     if pf_names:
         print("asdfasdfasdf")
+        print(pf_names)
         pf_codes = get_pfs_codes(pf_names)
     elif hidden_names and not clear:
         pf_names = hidden_names 
@@ -594,18 +610,13 @@ def esh_search():
     j = response.json()
     groupers = j["groupers"]
     event_sets = j["event_sets"]
-    dup_string = get_dupes_list(event_sets,subtree)
+    dup_string, dup_groupers = get_dupes_list(event_sets,subtree)
     selected_options, unselected_options,hidden_options = get_selected_and_unselected_options(pf_names)
     subtree_options, subtree_hidden = get_subtree_options(subtree)
     hidden_options += subtree_hidden
-    event_sets_out = ""
 
-    print(groupers[0])
-    print("_____")
-    print(groupers[1])
-    print(maxn)
     output_groupers = groupers[:maxn]
-    esh_details = get_groupers_list(output_groupers,subtree)
+    esh_details = get_groupers_list(output_groupers+dup_groupers,subtree)
     bstring = BIG_STRING
     if subtree and subtree != "CLINICAL INFO":
         bstring = create_tree(tree_top_descriptions[subtree])
@@ -618,6 +629,7 @@ def esh_search():
     grouper_outputs = ""
     first = True
     for grouper in groupers:
+        event_sets_out = ""
         style = ""
         if first:
             first = False
@@ -628,8 +640,6 @@ def esh_search():
         grouper_name = DESCRIPTIONS[grouper_code] + " [" + grouper_code + "]"
         for esh_with_codes in grouper[2]:
             esh = esh_with_codes[0]
-            print(esh)
-            print(esh in DESCRIPTIONS)
             esh_name = DESCRIPTIONS[esh]
             child_snomeds = ""
             for snomed in esh_with_codes[1][0]:
