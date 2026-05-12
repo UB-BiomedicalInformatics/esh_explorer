@@ -265,7 +265,7 @@ Event Set Hierarchy and to discover if there is already an existing Event Set th
 basic concept.</br></br>
             
 
-  <form action="/esh_explorer" method="post">
+  <form action="/eshexplorer" method="post">
     _HIDDEN_DETAILS_
     <div style="background-color: Gainsboro;" class="search_panel">
         <label for="text">Possible New ESH:</label>
@@ -574,7 +574,7 @@ def get_pfs_codes(pfs_names):
     return output
         
 
-@app.route("/esh_explorer",methods=["GET","POST"])
+@app.route("/eshexplorer",methods=["GET","POST"])
 def esh_search():
     text = "Blood Pressure"
     post_obj = {}
@@ -629,9 +629,17 @@ def esh_search():
     
     url = "https://halsted.compbio.buffalo.edu/anf_viewer/esh_service"
     response = requests.post(url,data=json.dumps(post_obj),headers=headers)
-    j = response.json()
-    groupers = j["groupers"]
-    event_sets = j["event_sets"]
+    j = []
+    try: 
+        j = response.json()
+    except:
+        pass
+    groupers = []
+    if "groupers" in j:
+        groupers = j["groupers"]
+    event_sets = []
+    if "event_sets" in j:
+        event_sets = j["event_sets"]
     dup_string, dup_groupers = get_dupes_list(event_sets,subtree)
     selected_options, unselected_options,hidden_options = get_selected_and_unselected_options(pf_names)
     subtree_options, subtree_hidden = get_subtree_options(subtree)
