@@ -417,6 +417,13 @@ services:
       - keycloak
     networks:
       - elk
+  
+  esh_explorer:
+    build: ./esh_explorer
+    ports:
+      - 8887:8887
+    networks:
+      - elk
 
 volumes:
 
