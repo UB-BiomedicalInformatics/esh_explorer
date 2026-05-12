@@ -265,7 +265,7 @@ Event Set Hierarchy and to discover if there is already an existing Event Set th
 basic concept.</br></br>
             
 
-  <form action="/" method="post">
+  <form action="/esh_explorer" method="post">
     _HIDDEN_DETAILS_
     <div style="background-color: Gainsboro;" class="search_panel">
         <label for="text">Possible New ESH:</label>
@@ -574,7 +574,7 @@ def get_pfs_codes(pfs_names):
     return output
         
 
-@app.route("/",methods=["GET","POST"])
+@app.route("/esh_explorer",methods=["GET","POST"])
 def esh_search():
     text = "Blood Pressure"
     post_obj = {}
