@@ -397,8 +397,6 @@ function toggle_whole(){
 function show_grouper(elementId){
    
     const e = String(elementId)
-    const url = "https://osler.compbio.buffalo.edu/webprotege//#projects/34d96442-3799-4dbc-8551-1d2942c81c08/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + e + "%3E)"
-
     const elements = document.getElementsByClassName('grouper');
     for (let el of elements) {
         el.style.display = 'none';
@@ -406,10 +404,6 @@ function show_grouper(elementId){
     const element = document.getElementById(elementId);
     if (element) {
         element.style.display = 'block';
-    }
-    const wp = document.getElementById('webprotege');
-    if (wp) {
-      wp.src = url;
     }
 
 }
@@ -485,7 +479,7 @@ def get_groupers_list(groupers_list,sub_tree):
         l = " < ".join(o)
         o.reverse()
         m = " > ".join(o)
-        link = "<a target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + p[0] + "%3E)\">" + p[0] + "</a>"
+        link = "<a onclick=\"show_grouper(" + p[0] + ")\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + p[0] + "%3E)\">" + p[0] + "</a>"
         output += "<tr>"
         output += "<th>" + link + "</th><th>" + grouper_value + "</th><th style=\"text-align: left;\"><div style=\"margin: 4px 2px; border:none; background-color:AliceBlue; cursor:pointer\" class=\"mybutton\" >" + l + "</div>"
         output += "<div style=\"display: none; margin: 4px 2px; border:none; background-color:AliceBlue; cursor:pointer\" class=\"mybutton\" type=\"submit\">" + m + "</div></th>\n"
