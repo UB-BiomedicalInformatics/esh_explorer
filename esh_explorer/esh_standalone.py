@@ -643,7 +643,7 @@ def esh_search():
     esh_details = get_groupers_list(output_groupers+dup_groupers,subtree)
     bstring = BIG_STRING
     if subtree and subtree != "CLINICAL INFO":
-        bstring = create_tree(tree_top_descriptions[subtree])
+        bstring = create_tree(TREE_TOP_DESCRIPTIONS[subtree])
     
     grouper_full = None
     search_codes = []
