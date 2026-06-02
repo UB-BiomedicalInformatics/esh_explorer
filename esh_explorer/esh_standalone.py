@@ -1,4 +1,4 @@
-jprint("ESH Standalone")
+print("ESH Standalone")
 
 import sys
 import re
