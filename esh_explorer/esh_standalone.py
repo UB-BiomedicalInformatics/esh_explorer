@@ -557,9 +557,9 @@ async function show_selected_esh_by_id(esh_id,thelink){
         while (therow.nextElementSibling) {
             therow.nextElementSibling.remove();
         }
-        j = {esh:esh_id,row_number:0};
-    } else {
         j = {esh:esh_id};
+    } else {
+        j = {esh:esh_id,row_number:0};
     }
     
     
@@ -932,7 +932,7 @@ def get_esh_info():
     if not esh:
         return ""
     link = "<a target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + esh + "%3E)\">" + esh_name + "</a>"
-    if not esh in esh_to_powerforms_map:
+    if not esh_to_powerforms_map:
         return "<tr><th>" + link + "</th></tr>"
 
     powerforms = esh_to_powerforms_map[esh]
