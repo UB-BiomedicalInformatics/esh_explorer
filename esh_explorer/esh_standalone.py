@@ -356,8 +356,8 @@ _DUPES_
             <table>
                 <tr>
                     <th>KEY:</th>
-                    <th style="background-color:lightblue">EVENT SETS</th>
-                    <th style="background-color:lightgreen">POWERFORMS</th>
+                    <th style="background-color:lightgreen">EVENT SETS</th>
+                    <th style="background-color:lightblue">POWERFORMS</th>
                 </tr>
             </table>
         </div>
