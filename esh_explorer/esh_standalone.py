@@ -20,10 +20,25 @@ TREE_TOP_DESCRIPTIONS = response.json()
 response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_esh_fulls")
 ESH_FULLS = response.json()
 
+response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_esh_to_powerforms_map")
+esh_to_powerforms_map = response.json()
 
+response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_powerform_to_eshs_map")
+powerform_to_eshs_map = response.json()
+
+if "2654125371" in powerform_to_eshs_map:
+    print(powerform_to_eshs_map["2654125371"] )
+    print("asdfasdfasd")
+
+if "2654125371" in esh_to_powerforms_map:
+    print(esh_to_powerforms_map["2654125371"] )
+    print("asdfasdfadfasdfasdfasdfd")
 
 response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_r_section_descriptions")
 R_SECTION_DESCRIPTIONS = response.json()
+
+response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_section_descriptions")
+SECTION_DESCRIPTIONS = response.json()
 
 response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_descriptions")
 DESCRIPTIONS = response.json()
@@ -256,8 +271,8 @@ body, html {
 <header>
 </header>
 <body>
-    <!--button onclick="toggle_whole()" style="display:block" class="whole_panel" >Show Search</button>
-    <button onclick="toggle_whole()" style="display:none" class="whole_panel" >Hide Search</button-->
+    <button onclick="toggle_whole()" style="display:block" class="whole_panel" >Hide Search</button>
+    <button onclick="toggle_whole()" style="display:none" class="whole_panel" >Show Search</button>
     <div class="whole_panel" style="display:block">
 	<h1>ESH Explorer</h1>
 The ESH Explorer is a tool for finding the proper location for a newly proposed Event Set within the
@@ -325,6 +340,15 @@ _DUPES_
             _ESH_
         </div class="display_panel">
     </div>
+  </div>
+  <button onclick="toggle_powerform()" style="display:none" class="powerform_panel" >Hide Powerform View</button>
+  <button onclick="toggle_powerform()" style="display:flex" class="powerform_panel" >Show Powerform View</button>
+  <div class="powerform_panel" style="display:none;">
+    _SECTIONS_DATALIST_
+    <table> 
+        <tbody id="powerform_eshs">
+        </tbody>
+    </table>
   </div>
 
   <script>
@@ -394,6 +418,18 @@ function toggle_whole(){
     }
 }
 
+function toggle_powerform(){
+    const elements = document.getElementsByClassName('powerform_panel');
+    for (let el of elements) {
+        if (el.style.display == 'none') {
+            el.style.display = 'block';
+        } 
+        else{
+          el.style.display = 'none';
+        }
+    }
+}
+
 function show_grouper(elementId){
    
     const e = String(elementId)
@@ -407,6 +443,98 @@ function show_grouper(elementId){
     }
 
 }
+
+async function show_selected_powerform(){
+    const form = document.getElementById('powerformform');
+    const data = new FormData(form);
+    const selectedValue = data.get('sections');
+    const url = 'http://localhost:8887/eshexplorer/get_powerform_info';
+    const req = { method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({powerform: selectedValue,row_number:0})
+                }
+                    
+    try{
+        const response = await fetch(url,req);
+        const restext = await response.text();
+        var mydiv = document.getElementById('powerform_eshs');
+        mydiv.innerHTML = restext
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+async function show_selected_powerform_by_name(powerform_id,thelink){
+    const thencell = thelink.parentElement;
+    const therow = thencell.parentElement;
+    const thecells = therow.cells;
+    for (const thecell of thecells){
+       thecell.style.removeProperty('border-style'); 
+       thecell.style.removeProperty('border-radius'); 
+       thecell.style.removeProperty('border-width'); 
+    }
+    thencell.style.borderStyle = 'solid';
+    thencell.style.borderRadius = '15px';
+    thencell.style.borderWidth = '3px';
+    while (therow.nextElementSibling) {
+        therow.nextElementSibling.remove();
+    }
+    
+    const url = 'http://localhost:8887/eshexplorer/get_powerform_info';
+    const req = { method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({powerform: powerform_id})
+                }
+                    
+    try{
+        const response = await fetch(url,req);
+        const restext = await response.text();
+        var mydiv = document.getElementById('powerform_eshs');
+        mydiv.innerHTML += restext
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+async function show_selected_esh_by_id(esh_id,thelink){
+    const thencell = thelink.parentElement;
+    const therow = thencell.parentElement;
+    const thecells = therow.cells;
+    for (const thecell of thecells){
+       thecell.style.removeProperty('border-style'); 
+       thecell.style.removeProperty('border-radius'); 
+       thecell.style.removeProperty('border-width'); 
+    }
+    thencell.style.borderStyle = 'solid';
+    thencell.style.borderRadius = '15px';
+    thencell.style.borderWidth = '3px';
+    while (therow.nextElementSibling) {
+        therow.nextElementSibling.remove();
+    }
+    
+
+    const url = 'http://localhost:8887/eshexplorer/get_esh_info';
+    const req = { method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({esh: esh_id})
+                }
+                    
+    try{
+        const response = await fetch(url,req);
+        const restext = await response.text();
+        var mydiv = document.getElementById('powerform_eshs');
+        mydiv.innerHTML += restext
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
 
 
   </script>
@@ -561,6 +689,14 @@ def get_selected_and_unselected_options(pfs_names):
             unselected_options += "<option id=\"" + R_SECTION_DESCRIPTIONS[name] + "\">" + name + "</option>"   
     return selected_options, unselected_options,hidden_selected
 
+def get_sections_datalist():
+    output = "<form id=\"powerformform\" action=\"javascript:void(0)\" onsubmit=\"show_selected_powerform();\"><input name=\"sections\" list=\"sections\"><datalist id=\"sections\">"
+    for name in SECTION_NAMES:
+        output += "<option value=\"" + name + "\">"
+    output += "</datalist><input onclick=\"show_selected_powerform();\" type=\"button\" value=\"Powerform\"></form>"
+    return output
+
+
 def get_pfs_codes(pfs_names):
     output = []
     for name in pfs_names:
@@ -677,9 +813,64 @@ def esh_search():
             event_sets_out += EVENT_SET_TEMPLATE.replace("EVENT_SET_SNOMEDS",child_snomeds).replace("EVENT_SET_POWERFORMS",child_pfs).replace("EVENT_SET_NAME",link).replace("EVENT_SET_CODE","m"+esh)
         
         grouper_outputs += GROUPER_TEMPLATE.replace("EVENT_SETS",event_sets_out).replace("GROUPER_NAME",grouper_name).replace("_STYLE_",style).replace("__ID__",grouper_code)
+    sections_datalist = get_sections_datalist() 
 
    
-    return ESH_TEMPLATE.replace("_SUBTREES_",subtree_options).replace("esh_details",esh_details).replace("TTTTRRRREEEE",bstring).replace("_DUPES_",dup_string).replace("_ADDITIONAL_SCRIPT_","").replace("_HIDDEN_DETAILS_",hidden_options).replace("TEST",text).replace("_SELECTED_POWERFORM_SECTIONS_",selected_options).replace("_UNSELECTED_POWERFORM_SECTIONS_",unselected_options).replace("BBBBOOOOLLLLDDD",yellowen_parents(event_sets,[]) + bolden_parents(search_codes,[])).replace("_ESH_",grouper_outputs)
+    return ESH_TEMPLATE.replace("_SUBTREES_",subtree_options).replace("esh_details",esh_details).replace("TTTTRRRREEEE",bstring).replace("_DUPES_",dup_string).replace("_ADDITIONAL_SCRIPT_","").replace("_HIDDEN_DETAILS_",hidden_options).replace("TEST",text).replace("_SELECTED_POWERFORM_SECTIONS_",selected_options).replace("_UNSELECTED_POWERFORM_SECTIONS_",unselected_options).replace("BBBBOOOOLLLLDDD",yellowen_parents(event_sets,[]) + bolden_parents(search_codes,[])).replace("_ESH_",grouper_outputs).replace("_SECTIONS_DATALIST_",sections_datalist)
+
+@app.route("/eshexplorer/get_powerform_info",methods=["GET","POST"])
+def get_powerform_info():
+    j = request.get_json()
+    powerform = ""
+    if "powerform" in j:
+        powerform = j["powerform"]
+    code = ""
+    print(powerform)
+    print(powerform in R_SECTION_DESCRIPTIONS)
+    if powerform and powerform in R_SECTION_DESCRIPTIONS:
+        code = R_SECTION_DESCRIPTIONS[powerform]
+    eshs = powerform_to_eshs_map[code]
+    link = "<a target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + code + "%3E)\">" + powerform + "</a>"
+    outstring = ""
+    if "row_number" in j:
+        outstring += "<tr><th>" + link + "</th></tr>"
+    outstring += "<tr style=\"background-color:lightgreen;\">"
+    for esh in eshs:
+        esh_name = DESCRIPTIONS[esh]
+        outstring += "<th>"
+        link = "<a onclick=\"show_selected_esh_by_id(" + esh + ",this);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + esh + "%3E)\">" + esh_name + "</a>"
+        outstring += link
+        outstring += "</th>"
+    outstring += "</tr>"
+
+
+    return outstring 
+
+@app.route("/eshexplorer/get_esh_info",methods=["GET","POST"])
+def get_esh_info():
+    j = request.get_json()
+    esh = ""
+    if "esh" in j:
+        esh = str(j["esh"])
+    print(esh)
+    if not esh:
+        return ""
+    esh_name = DESCRIPTIONS[esh] 
+    print(esh_name)
+    powerforms = esh_to_powerforms_map[esh]
+    outstring = "<tr style=\"background-color: lightblue;\">"
+    for powerform in powerforms:
+        powerform_name = SECTION_DESCRIPTIONS[powerform]
+        outstring += "<th>"
+        link = "<a onclick=\"show_selected_powerform_by_name('" + powerform_name + "',this);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + powerform + "%3E)\">" + powerform_name + "</a>"
+        outstring += link
+        outstring += "</th>"
+    outstring += "</tr>"
+
+
+    return outstring
+
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=8887)
