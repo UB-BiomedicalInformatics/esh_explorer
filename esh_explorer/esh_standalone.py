@@ -465,7 +465,7 @@ async function show_selected_powerform(){
     const form = document.getElementById('powerformform');
     const data = new FormData(form);
     const selectedValue = data.get('sections');
-    const url = 'https://osler.compbio.buffalo.edu/eshexplorer/get_powerform_info';
+    const url = '/eshexplorer/get_powerform_info';
     const req = { method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
@@ -487,7 +487,7 @@ async function show_selected_esh(){
     const form = document.getElementById('eshsform');
     const data = new FormData(form);
     const selectedValue = data.get('teshs');
-    const url = 'http://osler.compbio.buffalo.edu/eshexplorer/get_esh_info';
+    const url = '/eshexplorer/get_esh_info';
     const req = { method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
@@ -521,7 +521,7 @@ async function show_selected_powerform_by_name(powerform_id,thelink){
         therow.nextElementSibling.remove();
     }
     
-    const url = 'https://osler.compbio.buffalo.edu/eshexplorer/get_powerform_info';
+    const url = '/eshexplorer/get_powerform_info';
     const req = { method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
@@ -564,7 +564,7 @@ async function show_selected_esh_by_id(esh_id,thelink){
     
     
 
-    const url = 'https://osler.compbio.buffalo.edu/eshexplorer/get_esh_info';
+    const url = '/eshexplorer/get_esh_info';
     const req = { method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
