@@ -506,9 +506,12 @@ async function show_selected_esh(){
 }
 
 async function show_selected_powerform_by_name(powerform_id,thelink){
+    j = {};
+    if (thelink != null) {
+        
     const thencell = thelink.parentElement;
     const therow = thencell.parentElement;
-    const thecells = therow.cells;
+    const thecells = Array.from(therow.cells);
     for (const thecell of thecells){
        thecell.style.removeProperty('border-style'); 
        thecell.style.removeProperty('border-radius'); 
@@ -520,13 +523,18 @@ async function show_selected_powerform_by_name(powerform_id,thelink){
     while (therow.nextElementSibling) {
         therow.nextElementSibling.remove();
     }
+        j = {powerform:powerform_id};;
+    } else {
+        j = {powerform:powerform_id,row_number:0};
+    }
+
     
     const url = '/eshexplorer/get_powerform_info';
     const req = { method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({powerform: powerform_id})
+                    body: JSON.stringify(j)
                 }
                     
     try{
@@ -545,7 +553,7 @@ async function show_selected_esh_by_id(esh_id,thelink){
         
         const thencell = thelink.parentElement;
         const therow = thencell.parentElement;
-        const thecells = therow.cells;
+        const thecells = Array.from(therow.cells);
         for (const thecell of thecells){
             thecell.style.removeProperty('border-style'); 
             thecell.style.removeProperty('border-radius'); 
@@ -763,6 +771,14 @@ def get_pfs_codes(pfs_names):
         output.append(R_SECTION_DESCRIPTIONS[name])
     return output
         
+'''
+[   [], 
+    ['Mid parental height (observable entity)', 'Result (navigational concept)', 'Followed by (qualifier value)', 'Result (administrative concept)', 'Following (qualifier value)', 'Resulting in (attribute)', 'Male (finding)', 'Male structure (body structure)', 'Man (person)'], 
+    [], 
+    ['Mid Parental Height', 'Mid Parental Height']
+]
+
+'''
 
 @app.route("/eshexplorer",methods=["GET","POST"])
 def esh_search():
@@ -867,9 +883,17 @@ def esh_search():
                 child_snomeds += EVENT_SET_SNOMED_TEMPLATE_GREEN.replace("EVENT_SET_SNOMED",snomed)
             child_pfs = ""
             for powerform in esh_with_codes[1][2]:
-                child_pfs += EVENT_SET_POWERFORM_TEMPLATE_BLUE.replace("EVENT_SET_POWERFORM",powerform)
+                if not powerform in R_SECTION_DESCRIPTIONS:
+                    continue
+                powerform_id = R_SECTION_DESCRIPTIONS[powerform]
+                powerform_link = "<a onclick=\"show_selected_powerform_by_name('" + powerform + "',null);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + powerform_id + "%3E)\">" + powerform + "</a>"
+                child_pfs += EVENT_SET_POWERFORM_TEMPLATE_BLUE.replace("EVENT_SET_POWERFORM",powerform_link)
             for powerform in esh_with_codes[1][3]:
-                child_pfs += EVENT_SET_POWERFORM_TEMPLATE.replace("EVENT_SET_POWERFORM",powerform)
+                if not powerform in R_SECTION_DESCRIPTIONS:
+                    continue
+                powerform_id = R_SECTION_DESCRIPTIONS[powerform]
+                powerform_link = "<a onclick=\"show_selected_powerform_by_name('" + powerform + "',null);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + powerform_id + "%3E)\">" + powerform + "</a>"
+                child_pfs += EVENT_SET_POWERFORM_TEMPLATE.replace("EVENT_SET_POWERFORM",powerform_link)
             event_sets_out += EVENT_SET_TEMPLATE.replace("EVENT_SET_SNOMEDS",child_snomeds).replace("EVENT_SET_POWERFORMS",child_pfs).replace("EVENT_SET_NAME",link).replace("EVENT_SET_CODE","m"+esh)
         
         grouper_outputs += GROUPER_TEMPLATE.replace("EVENT_SETS",event_sets_out).replace("GROUPER_NAME",grouper_name).replace("_STYLE_",style).replace("__ID__",grouper_code)
@@ -932,7 +956,7 @@ def get_esh_info():
     if not esh:
         return ""
     link = "<a target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + esh + "%3E)\">" + esh_name + "</a>"
-    if not esh_to_powerforms_map:
+    if not esh in esh_to_powerforms_map:
         return "<tr><th>" + link + "</th></tr>"
 
     powerforms = esh_to_powerforms_map[esh]
