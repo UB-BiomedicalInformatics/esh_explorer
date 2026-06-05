@@ -541,7 +541,11 @@ async function show_selected_powerform_by_name(powerform_id,thelink){
         const response = await fetch(url,req);
         const restext = await response.text();
         var mydiv = document.getElementById('powerform_eshs');
-        mydiv.innerHTML += restext
+        if (thelink == null) {
+            mydiv.innerHTML = restext
+        } else {
+            mydiv.innerHTML += restext
+        }
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -915,13 +919,23 @@ def get_powerform_info():
     if powerform and powerform in R_SECTION_DESCRIPTIONS:
         code = R_SECTION_DESCRIPTIONS[powerform]
     eshs = powerform_to_eshs_map[code]
+    eshs_local = {}
+    for esh in eshs:
+        eshs_local[DESCRIPTIONS[esh]] = esh
+    esh_names = list(eshs_local.keys())
+    esh_names.sort()
     link = "<a target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + code + "%3E)\">" + powerform + "</a>"
     outstring = ""
     if "row_number" in j:
         outstring += "<tr><th>" + link + "</th></tr>"
     outstring += "<tr style=\"background-color:lightgreen;\">"
-    for esh in eshs:
-        esh_name = DESCRIPTIONS[esh]
+    i = 0
+    for esh_name in esh_names:
+        i += 1
+        if i == 12:
+            i = 0
+            outstring += "</tr><tr style=\"background-color:lightgreen;\">"
+        esh = eshs_local[esh_name]
         outstring += "<th>"
         link = "<a onclick=\"show_selected_esh_by_id(" + esh + ",this);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + esh + "%3E)\">" + esh_name + "</a>"
         outstring += link
@@ -960,12 +974,23 @@ def get_esh_info():
         return "<tr><th>" + link + "</th></tr>"
 
     powerforms = esh_to_powerforms_map[esh]
+    powerforms_local = {}
+    for powerform in powerforms:
+        powerforms_local[SECTION_DESCRIPTIONS[powerform]] = powerform
+    powerform_names = list(powerforms_local.keys())
+    powerform_names.sort()
     outstring = ""
     if first:
         outstring += "<tr><th>" + link + "</th></tr>"
     outstring += "<tr style=\"background-color: lightblue;\">"
-    for powerform in powerforms:
-        powerform_name = SECTION_DESCRIPTIONS[powerform]
+    i = 0
+    for powerform_name in powerform_names:
+        i += 1
+        if i == 12:
+            i = 0
+            outstring += "</tr>"
+            outstring += "<tr style=\"background-color: lightblue;\">"
+        powerform = powerforms_local[powerform_name]
         outstring += "<th>"
         link = "<a onclick=\"show_selected_powerform_by_name('" + powerform_name + "',this);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + powerform + "%3E)\">" + powerform_name + "</a>"
         outstring += link
