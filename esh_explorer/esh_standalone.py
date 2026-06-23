@@ -16,6 +16,9 @@ app = Flask(__name__)
 response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_tree_top_descriptions")
 TREE_TOP_DESCRIPTIONS = response.json()
 
+response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_placeholders")
+PLACEHOLDERS = response.json()
+
 
 response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_esh_fulls")
 ESH_FULLS = response.json()
@@ -936,9 +939,13 @@ def get_powerform_info():
             i = 0
             outstring += "</tr><tr style=\"background-color:lightgreen;\">"
         esh = eshs_local[esh_name]
+        placeholder_string = ""
+        if esh in PLACEHOLDERS:
+            placeholder_string = "<p style=\"font-size: 9px;\">placeholder</p>"
         outstring += "<th>"
         link = "<a onclick=\"show_selected_esh_by_id(" + esh + ",this);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + esh + "%3E)\">" + esh_name + "</a>"
         outstring += link
+        outstring += placeholder_string
         outstring += "</th>"
     outstring += "</tr>"
 
