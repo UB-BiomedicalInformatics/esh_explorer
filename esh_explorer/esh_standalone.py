@@ -302,10 +302,12 @@ body, html {
     <button onclick="toggle_whole()" style="display:none" class="whole_panel" >Show Search</button>
     <div class="whole_panel" style="display:block">
 	<h1>ESH Explorer</h1>
+    <div style="width:450px;overflow:auto;">
 The ESH Explorer is a tool for finding the proper location for a newly proposed Event Set within the
 Event Set Hierarchy and to discover if there is already an existing Event Set that covers the same
 basic concept.</br>
 <a target="blank" href="https://osler.compbio.buffalo.edu/webprotege//#projects/34d96442-3799-4dbc-8551-1d2942c81c08/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC3995585%3E)">Link To WebProtege</a>
+    </div>
 </br>
 </br>
   <form id="search_form" action="javascript:void(0)" onsubmit="populate_search_results();">
@@ -336,6 +338,7 @@ basic concept.</br>
 	 <input type="button" class="mybutton" onclick="toggle_esh()" value=">>">
 	 <input type="button" class="mybutton" style="display: none;" onclick="toggle_esh()" value="<<">
     </div>	
+    <h3 style="display:flex; column-gap:20px;"><div>Search Term:  </div> <div id="search_term"></div></h3>
     <div>
     <h2>Identified Possible Groupers</h2>
     <br/>
@@ -500,7 +503,7 @@ async function populate_search_results(){
         const response = await fetch(url,req);
         const restext = await response.text();
         var mydiv = document.getElementById('dups_panel');
-        mydiv.innerHTML = restext
+        mydiv.innerHTML = restext;
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -510,7 +513,7 @@ async function populate_search_results(){
         const response = await fetch(display_grouper_url,req);
         const restext2 = await response.text();
         var groupers_panel = document.getElementById('groupers_panel');
-        groupers_panel.innerHTML = restext2
+        groupers_panel.innerHTML = restext2;
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -520,10 +523,13 @@ async function populate_search_results(){
         const response = await fetch(grouper_analysis_url,req);
         const restext3 = await response.text();
         var display_panel = document.getElementById('display_panel');
-        display_panel.innerHTML = restext3
+        display_panel.innerHTML = restext3;
     } catch (error) {
         console.error('Error fetching data:', error);
     }
+    var search_term_place = document.getElementById('search_term');
+    search_term_place.innerHTML = text;
+
 
     
 }
@@ -977,7 +983,6 @@ def get_duplicates():
     else:
         subtree = "CLINICAL INFO"
 
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     headers = {'Content-Type': 'application/json'}
     url = "https://halsted.compbio.buffalo.edu/anf_viewer/esh_service"
     response = requests.post(url,data=json.dumps(post_obj),headers=headers)
@@ -988,10 +993,17 @@ def get_duplicates():
     except:
         pass
     
+    print(post_obj)
     event_sets = []
     if "event_sets" in r:
         event_sets = r["event_sets"]
+    print(r)
+    print(event_sets)
     dup_string = DUPES_TABLE_TEMPLATE.replace("_DUPES_",get_dupes_list(event_sets,subtree))
+
+    print("---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    print(dup_string)
     
     return dup_string 
 
@@ -1016,7 +1028,6 @@ def get_groupers():
     if "subtree" in j:
         subtree = j["subtree"]
 
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     
     print(text)
     pf_codes = []
