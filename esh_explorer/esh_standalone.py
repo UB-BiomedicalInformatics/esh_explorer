@@ -10,7 +10,25 @@ import requests
 from flask import Flask
 from flask import request
 
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 app = Flask(__name__)
+
 
 #response = requests.get("https://google.com")
 response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_tree_top_descriptions")
@@ -806,8 +824,35 @@ def get_pfs_codes(pfs_names):
 
 '''
 
-@app.route("/eshexplorer",methods=["GET"])
-def esh_search():
+@app.route("/eshexplorer",methods=["GET","POST"])
+def esh_search_one():
+    
+    subtree_options = get_subtree_options()
+    sections_datalist = get_sections_datalist() 
+    esh_datalist = get_eshs_datalist()
+    options = get_options()
+    return ESH_TEMPLATE.replace("_UNSELECTED_POWERFORM_SECTIONS_",options).replace("_SUBTREES_",subtree_options).replace("_SECTIONS_DATALIST_",sections_datalist).replace("_ESHS_DATALIST_",esh_datalist)
+
+@app.route("/eshexplorer/eshexplorer",methods=["GET","POST"])
+def esh_search_two():
+    
+    subtree_options = get_subtree_options()
+    sections_datalist = get_sections_datalist() 
+    esh_datalist = get_eshs_datalist()
+    options = get_options()
+    return ESH_TEMPLATE.replace("_UNSELECTED_POWERFORM_SECTIONS_",options).replace("_SUBTREES_",subtree_options).replace("_SECTIONS_DATALIST_",sections_datalist).replace("_ESHS_DATALIST_",esh_datalist)
+
+@app.route("/",methods=["GET","POST"])
+def esh_search_three():
+    
+    subtree_options = get_subtree_options()
+    sections_datalist = get_sections_datalist() 
+    esh_datalist = get_eshs_datalist()
+    options = get_options()
+    return ESH_TEMPLATE.replace("_UNSELECTED_POWERFORM_SECTIONS_",options).replace("_SUBTREES_",subtree_options).replace("_SECTIONS_DATALIST_",sections_datalist).replace("_ESHS_DATALIST_",esh_datalist)
+
+@app.route("/eshexplorer/",methods=["GET","POST"])
+def esh_search_four():
     
     subtree_options = get_subtree_options()
     sections_datalist = get_sections_datalist() 
