@@ -129,6 +129,9 @@ ESH_TEMPLATE = '''
 		<title>ESH Explorer</title>
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js">
+</script>
 <style>
 ul, #myUL {
   list-style-type: none;
@@ -144,8 +147,6 @@ input[type=submit] {
   text-decoration: none;
   cursor: pointer;
 }
-
-BBBBOOOOLLLLDDDD
 
 .button {
   border: none;
@@ -285,37 +286,29 @@ body, html {
 	<h1>ESH Explorer</h1>
 The ESH Explorer is a tool for finding the proper location for a newly proposed Event Set within the
 Event Set Hierarchy and to discover if there is already an existing Event Set that covers the same
-basic concept.</br></br>
-            
-
-  <form action="/eshexplorer" method="post">
-    _HIDDEN_DETAILS_
+basic concept.</br>
+<a target="blank" href="https://osler.compbio.buffalo.edu/webprotege//#projects/34d96442-3799-4dbc-8551-1d2942c81c08/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC3995585%3E)">Link To WebProtege</a>
+</br>
+</br>
+  <form id="search_form" action="javascript:void(0)" onsubmit="populate_search_results();">
     <div style="background-color: Gainsboro;" class="search_panel">
         <label for="text">Possible New ESH:</label>
         <input type="text" name="text" style="width: 300px;" id="text" name="description" value="TEST"><br><br>
 	        <div style="display: flex;">
  		        <label for="subtree" style="display: inline-block; width: 50%;">ESH Subpart:
-  		            <select name="subtree" id="subtree">
+  		            <select class="js-example-basic-single" name="subtree" id="subtree">
 		                _SUBTREES_
   		            </select>
 		        </label>
 	        </div>
         <div style="display: flex;">
-            <div id="powerforms_to_select" style="display: flex; gap: 10px;">
-                <div style="display: block;">
-                    <select id="rightValues" style="display: block; width: 200px" size="10" multiple>
-                        _UNSELECTED_POWERFORM_SECTIONS_
-                    </select>
-                    <input type="button" style="display: block; width: 200px; white-space: normal;" id="btnLeft" value="Select Associated Powerform Sections" />
-                </div>
-                <div style="display: block;">
-                    <select id="leftValues" style="display: block; width: 200px" size="10" name="leftValues" multiple>_SELECTED_POWERFORM_SECTIONS_</select>
-                    <button type="submit" style="display: block; width: 200px" name="clear" value="clear">Clear Selected Powerforms</button>
-                </div>
-            </div>
+ 		    <label for="powerforms" style="display: inline-block; width: 50%;">Powerform Sections:
+            <select id="powerforms" class="js-example-basic-multiple" multiple="multiple" name="powerforms">
+                _UNSELECTED_POWERFORM_SECTIONS_
+            </select>
         </div>
 		<div style="display: block;">
-           	<button style="display: block;" type="submit">Find Suggested Groupers and Possible Event Set Duplicates</button>
+           	<input onclick="populate_search_results();" style="display: block;" type="button" value="Find Suggested Groupers and Possible Event Set Duplicates">
 		</div>
       </div>
     </div">
@@ -328,24 +321,21 @@ basic concept.</br></br>
     <div>
     <h2>Identified Possible Groupers</h2>
     <br/>
-    <table><tr><th>link</th><th>confidence</th><th>hierarchy</th></tr>
-esh_details
+    <div id="groupers_panel">
+    </div>
 </table>
     (Possible groupers appear in red text below.)
     </div>
     <div>
         <h2>Identified Possible Duplicates</h2>
-        <table>
-        <tr><th>link</th><th>hierarchy</th></tr>
-_DUPES_
-        </table>
+        <div id="dups_panel">
+        </div>
     </div>
     <br>
     <button onclick="toggle_bottom()" style="display:none" class="bottom_panel" >Hide Analysis</button>
     <button onclick="toggle_bottom()" style="display:flex" class="bottom_panel" >Show Analysis</button>
     <div class="bottom_panel" style="display:none;">
-        <div class="display_panel">
-            _ESH_
+        <div id="display_panel" class="display_panel">
         </div class="display_panel">
     </div>
   </div>
@@ -373,7 +363,14 @@ _DUPES_
 
   <script>
 
-    _ADDITIONAL_SCRIPT_
+$(document).ready(function() {
+    $('.js-example-basic-multiple').select2();
+});
+$(document).ready(function() {
+    $('.js-example-basic-single').select2();
+});
+
+
 var toggler = document.getElementsByClassName("box");
 var i;
 
@@ -383,25 +380,6 @@ for (i = 0; i < toggler.length; i++) {
     this.classList.toggle("check-box");
   });
 }
-$("#btnLeft").click(function () {
-    var selectedItem = $("#rightValues option:selected");
-    $("#leftValues").append(selectedItem);
-});
-
-$("#btnRight").click(function () {
-    var selectedItem = $("#leftValues option:selected");
-    $("#rightValues").append(selectedItem);
-});
-
-$("#rightValues").change(function () {
-    var selectedItem = $("#rightValues option:selected");
-    $("#txtRight").val(selectedItem.text());
-});
-
-$("#leftValues").change(function () {
-    var selectedItem = $("#leftValues option:selected");
-    $("#txtLeft").val(selectedItem.text());
-});
 
 function toggle_esh(){
 	document.querySelectorAll('.mybutton').forEach(function(el) {
@@ -484,6 +462,52 @@ async function show_selected_powerform(){
     } catch (error) {
         console.error('Error fetching data:', error);
     }
+}
+
+async function populate_search_results(){
+    const form = document.getElementById('search_form');
+    const data = new FormData(form);
+    const text = data.get('text');
+    const powerforms = data.getAll('powerforms');
+    const subtree = data.get('subtree');
+    const the_body = JSON.stringify({'powerforms': powerforms,'text':text,'subtree':subtree});
+    const url = '/eshexplorer/display_duplicates';
+    const req = { method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: the_body
+                }
+    try{
+        const response = await fetch(url,req);
+        const restext = await response.text();
+        var mydiv = document.getElementById('dups_panel');
+        mydiv.innerHTML = restext
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+   
+   const display_grouper_url= '/eshexplorer/display_groupers';
+    try{
+        const response = await fetch(display_grouper_url,req);
+        const restext2 = await response.text();
+        var groupers_panel = document.getElementById('groupers_panel');
+        groupers_panel.innerHTML = restext2
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+
+    const grouper_analysis_url = '/eshexplorer/display_grouper_analysis';
+    try{
+        const response = await fetch(grouper_analysis_url,req);
+        const restext3 = await response.text();
+        var display_panel = document.getElementById('display_panel');
+        display_panel.innerHTML = restext3
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+
+    
 }
 
 async function show_selected_esh(){
@@ -635,6 +659,18 @@ EVENT_SET_SNOMED_TEMPLATE = '''<div class="event_set_snomed">EVENT_SET_SNOMED</d
 EVENT_SET_SNOMED_TEMPLATE_GREEN = '''<div class="event_set_snomed" style="background-color: lightgreen">EVENT_SET_SNOMED</div>'''
 EVENT_SET_POWERFORM_TEMPLATE = '''<div class="event_set_powerform">EVENT_SET_POWERFORM</div>'''
 EVENT_SET_POWERFORM_TEMPLATE_BLUE = '''<div class="event_set_powerform" style="background-color: lightblue">EVENT_SET_POWERFORM</div>'''
+DUPES_TABLE_TEMPLATE = '''
+        <table>
+            <tr><th>link</th><th>hierarchy</th></tr>
+            _DUPES_
+        </table>
+'''
+
+GROUPERS_TABLE_TEMPLATE = '''
+    <table><tr><th>link</th><th>confidence</th><th>hierarchy</th></tr>
+        _GROUPERS_
+    </table>
+    '''
 
 def convert_grouper_certainties(groupers_list):
     output = []
@@ -684,7 +720,6 @@ def get_groupers_list(groupers_list,sub_tree):
 
 def get_dupes_list(dups,subtree):
     output = ""
-    groupers = []
     for dup in dups:
         if not dup in ESH_FULLS:
             continue
@@ -713,47 +748,31 @@ def get_dupes_list(dups,subtree):
         output += "<div style=\"display: none; margin: 4px 2px; border:none; background-color:HoneyDew; cursor:pointer\" class=\"mybutton\" >" + m + "</div></th>"
         output += "</tr>"
     
-    return [output,groupers]
+    return output
 
-HIDDEN_SUBTREE = '''<input type="hidden" name="hidden_subtree" value="VALUE">'''
 
-def get_subtree_options(selected_tree):
+def get_subtree_options():
     output = ""
     tree_top_descriptions = TREE_TOP_DESCRIPTIONS 
-    if selected_tree:
-        output += "<option id=\"" + tree_top_descriptions[selected_tree] + "\">" + selected_tree + "</option>"
-    if selected_tree != "CLINICAL INFO":
-        output += "<option id=\"" + tree_top_descriptions["CLINICAL INFO"] + "\">CLINICAL INFO</option>"
-    if selected_tree != "ALL RESULT SECTIONS":
-        output += "<option id=\"" + tree_top_descriptions["ALL RESULT SECTIONS"] + "\">ALL RESULT SECTIONS</option>"
-    if selected_tree != "ALL OCF EVENT SETS":
-        output += "<option id=\"" + tree_top_descriptions["ALL OCF EVENT SETS"] + "\">ALL OCF EVENT SETS</option>"
-    if selected_tree != "ALL DOCUMENT SECTIONS":
-        output += "<option id=\"" + tree_top_descriptions["ALL DOCUMENT SECTIONS"] + "\">ALL DOCUMENT SECTIONS</option>"
+    output += "<option id=\"" + tree_top_descriptions["CLINICAL INFO"] + "\">CLINICAL INFO</option>"
+    output += "<option id=\"" + tree_top_descriptions["ALL RESULT SECTIONS"] + "\">ALL RESULT SECTIONS</option>"
+    output += "<option id=\"" + tree_top_descriptions["ALL OCF EVENT SETS"] + "\">ALL OCF EVENT SETS</option>"
+    output += "<option id=\"" + tree_top_descriptions["ALL DOCUMENT SECTIONS"] + "\">ALL DOCUMENT SECTIONS</option>"
 
     tdescriptions = list(tree_top_descriptions.keys())
     tdescriptions.sort()
         
     for description in tdescriptions:
-        if not description in ["CLINICAL INFO","ALL RESULT SECTIONS","ALL OCF EVENT SETS","ALL DOCUMENT SECTIONS",selected_tree]:
+        if not description in ["CLINICAL INFO","ALL RESULT SECTIONS","ALL OCF EVENT SETS","ALL DOCUMENT SECTIONS"]:
             output += ("<option id=\"" + tree_top_descriptions[description] + "\">" + description + "</option>")
 
-    h = HIDDEN_SUBTREE.replace("VALUE","CLINICAL_INFO")
-    if selected_tree:
-        h = HIDDEN_SUBTREE.replace("VALUE",selected_tree)
-    return output, h
+    return output
 
-def get_selected_and_unselected_options(pfs_names):
-    selected_options = ""
-    hidden_selected = ""
-    for name in pfs_names:
-        selected_options += "<option id=\"" + R_SECTION_DESCRIPTIONS[name] + "\">" + name + "</option>"   
-        hidden_selected += "<input type=\"hidden\" name=\"hidden_selected\" value=\"" + name + "\">"
-    unselected_options = ""
+def get_options():
+    output = ""
     for name in SECTION_NAMES:
-        if not name in pfs_names:
-            unselected_options += "<option id=\"" + R_SECTION_DESCRIPTIONS[name] + "\">" + name + "</option>"   
-    return selected_options, unselected_options,hidden_selected
+        output += "<option id=\"" + R_SECTION_DESCRIPTIONS[name] + "\">" + name + "</option>"   
+    return output 
 
 def get_sections_datalist():
     output = "<form id=\"powerformform\" action=\"javascript:void(0)\" onsubmit=\"show_selected_powerform();\"><input name=\"sections\" list=\"sections\"><datalist id=\"sections\">"
@@ -787,128 +806,14 @@ def get_pfs_codes(pfs_names):
 
 '''
 
-@app.route("/eshexplorer",methods=["GET","POST"])
+@app.route("/eshexplorer",methods=["GET"])
 def esh_search():
-    text = "Blood Pressure"
-    post_obj = {}
-    post_obj["text"] = text
-    pf_names = []
-    hidden_names = []
-    hidden_subtree = ""
-    clear = False
-    subtree = "CLINICAL INFO"
-    maxn = 10 
     
-    if "text" in request.form:
-        text = request.form["text"]
-        post_obj["text"] = text
-    if "leftValues" in request.form:
-        print(request)
-        pf_names = request.form.getlist("leftValues")
-        print(pf_names)
-        post_obj["powerforms"] = pf_names
-    if "hidden_selected" in request.form:
-        hidden_names = request.form.getlist("hidden_selected")
-    if "hidden_subtree" in request.form:
-        hidden_subtree = request.form["hidden_subtree"]
-    if "clear" in request.form:
-        clear = request.form["clear"]
-    if "subtree" in request.form:
-        subtree = request.form["subtree"]
-        post_obj["subtree"] = subtree 
-    post_obj["max_response"] = maxn
-    print(post_obj)
-    
-    print(text)
-    if text == None:
-        text = "Blood Pressure"
-    pf_codes = []
-    if clear:
-        pf_names = []
-    if pf_names:
-        print("asdfasdfasdf")
-        print(pf_names)
-        pf_codes = get_pfs_codes(pf_names)
-    elif hidden_names and not clear:
-        pf_names = hidden_names 
-        print(pf_names)
-        pf_codes = get_pfs_codes(pf_names)
-        
-    print(subtree)
-    if not subtree:
-        subtree = "CLINICAL INFO"
-    
-    headers = {'Content-Type': 'application/json'}
-    
-    url = "https://halsted.compbio.buffalo.edu/anf_viewer/esh_service"
-    response = requests.post(url,data=json.dumps(post_obj),headers=headers)
-    j = []
-    try: 
-        j = response.json()
-    except:
-        pass
-    groupers = []
-    if "groupers" in j:
-        groupers = j["groupers"]
-    event_sets = []
-    if "event_sets" in j:
-        event_sets = j["event_sets"]
-    dup_string, dup_groupers = get_dupes_list(event_sets,subtree)
-    selected_options, unselected_options,hidden_options = get_selected_and_unselected_options(pf_names)
-    subtree_options, subtree_hidden = get_subtree_options(subtree)
-    hidden_options += subtree_hidden
-
-    output_groupers = groupers[:maxn]
-    esh_details = get_groupers_list(output_groupers+dup_groupers,subtree)
-    bstring = BIG_STRING
-    if subtree and subtree != "CLINICAL INFO":
-        bstring = create_tree(TREE_TOP_DESCRIPTIONS[subtree])
-    
-    grouper_full = None
-    search_codes = []
-    for result in output_groupers:
-        search_codes.append(result[0])
-
-    grouper_outputs = ""
-    first = True
-    for grouper in groupers:
-        event_sets_out = ""
-        style = ""
-        if first:
-            first = False
-            style = "block"
-        else:
-            style = "none"
-        grouper_code = grouper[0]
-        grouper_name = DESCRIPTIONS[grouper_code] + " [" + grouper_code + "]"
-        for esh_with_codes in grouper[2]:
-            esh = esh_with_codes[0]
-            esh_name = DESCRIPTIONS[esh]
-            link = "<a onclick=\"show_selected_esh_by_id('" + esh + "',null)\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + esh + "%3E)\">" + esh_name + "</a>"
-            child_snomeds = ""
-            for snomed in esh_with_codes[1][0]:
-                child_snomeds += EVENT_SET_SNOMED_TEMPLATE_GREEN.replace("EVENT_SET_SNOMED",snomed)
-            child_pfs = ""
-            for powerform in esh_with_codes[1][2]:
-                if not powerform in R_SECTION_DESCRIPTIONS:
-                    continue
-                powerform_id = R_SECTION_DESCRIPTIONS[powerform]
-                powerform_link = "<a onclick=\"show_selected_powerform_by_name('" + powerform + "',null);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + powerform_id + "%3E)\">" + powerform + "</a>"
-                child_pfs += EVENT_SET_POWERFORM_TEMPLATE_BLUE.replace("EVENT_SET_POWERFORM",powerform_link)
-            for powerform in esh_with_codes[1][3]:
-                if not powerform in R_SECTION_DESCRIPTIONS:
-                    continue
-                powerform_id = R_SECTION_DESCRIPTIONS[powerform]
-                powerform_link = "<a onclick=\"show_selected_powerform_by_name('" + powerform + "',null);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + powerform_id + "%3E)\">" + powerform + "</a>"
-                child_pfs += EVENT_SET_POWERFORM_TEMPLATE.replace("EVENT_SET_POWERFORM",powerform_link)
-            event_sets_out += EVENT_SET_TEMPLATE.replace("EVENT_SET_SNOMEDS",child_snomeds).replace("EVENT_SET_POWERFORMS",child_pfs).replace("EVENT_SET_NAME",link).replace("EVENT_SET_CODE","m"+esh)
-        
-        grouper_outputs += GROUPER_TEMPLATE.replace("EVENT_SETS",event_sets_out).replace("GROUPER_NAME",grouper_name).replace("_STYLE_",style).replace("__ID__",grouper_code)
+    subtree_options = get_subtree_options()
     sections_datalist = get_sections_datalist() 
     esh_datalist = get_eshs_datalist()
-
-   
-    return ESH_TEMPLATE.replace("_SUBTREES_",subtree_options).replace("esh_details",esh_details).replace("TTTTRRRREEEE",bstring).replace("_DUPES_",dup_string).replace("_ADDITIONAL_SCRIPT_","").replace("_HIDDEN_DETAILS_",hidden_options).replace("TEST",text).replace("_SELECTED_POWERFORM_SECTIONS_",selected_options).replace("_UNSELECTED_POWERFORM_SECTIONS_",unselected_options).replace("BBBBOOOOLLLLDDD",yellowen_parents(event_sets,[]) + bolden_parents(search_codes,[])).replace("_ESH_",grouper_outputs).replace("_SECTIONS_DATALIST_",sections_datalist).replace("_ESHS_DATALIST_",esh_datalist)
+    options = get_options()
+    return ESH_TEMPLATE.replace("_UNSELECTED_POWERFORM_SECTIONS_",options).replace("_SUBTREES_",subtree_options).replace("_SECTIONS_DATALIST_",sections_datalist).replace("_ESHS_DATALIST_",esh_datalist)
 
 @app.route("/eshexplorer/get_powerform_info",methods=["GET","POST"])
 def get_powerform_info():
@@ -1007,6 +912,178 @@ def get_esh_info():
 
     return outstring
 
+
+@app.route("/eshexplorer/display_duplicates",methods=["GET","POST"])
+def get_duplicates():
+    j = request.get_json()
+    post_obj = {}
+    
+    if "text" in j:
+        text = j["text"]
+        post_obj["text"] = text
+    else:
+        return ""
+    if "powerforms" in j:
+        pf_names = j["powerforms"]
+        print(pf_names)
+        post_obj["powerforms"] = pf_names
+    if "subtree" in j:
+        subtree = j["subtree"]
+    else:
+        subtree = "CLINICAL INFO"
+
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    headers = {'Content-Type': 'application/json'}
+    url = "https://halsted.compbio.buffalo.edu/anf_viewer/esh_service"
+    response = requests.post(url,data=json.dumps(post_obj),headers=headers)
+    
+    r = []
+    try: 
+        r = response.json()
+    except:
+        pass
+    
+    event_sets = []
+    if "event_sets" in r:
+        event_sets = r["event_sets"]
+    dup_string = DUPES_TABLE_TEMPLATE.replace("_DUPES_",get_dupes_list(event_sets,subtree))
+    
+    return dup_string 
+
+@app.route("/eshexplorer/display_groupers",methods=["GET","POST"])
+def get_groupers():
+    j = request.get_json()
+    post_obj = {}
+    pf_names = []
+    subtree = "CLINICAL INFO"
+    maxn = 10 
+    
+    print(j)
+    if "text" in j:
+        text = j["text"]
+        post_obj["text"] = text
+    else:
+        return ""
+    if "powerforms" in j:
+        pf_names = j["powerforms"]
+        print(pf_names)
+        post_obj["powerforms"] = pf_names
+    if "subtree" in j:
+        subtree = j["subtree"]
+
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    
+    print(text)
+    pf_codes = []
+    if pf_names:
+        print("asdfasdfasdf")
+        print(pf_names)
+        pf_codes = get_pfs_codes(pf_names)
+        
+    print(subtree)
+    if not subtree:
+        subtree = "CLINICAL INFO"
+    
+    headers = {'Content-Type': 'application/json'}
+    
+    url = "https://halsted.compbio.buffalo.edu/anf_viewer/esh_service"
+    response = requests.post(url,data=json.dumps(post_obj),headers=headers)
+    j = []
+    try: 
+        j = response.json()
+    except:
+        pass
+    groupers = []
+    if "groupers" in j:
+        groupers = j["groupers"]
+    event_sets = []
+    if "event_sets" in j:
+        event_sets = j["event_sets"]
+    output_groupers = groupers[:10]
+    esh_details = get_groupers_list(output_groupers,subtree)
+
+    return GROUPERS_TABLE_TEMPLATE.replace("_GROUPERS_",esh_details)
+
+
+@app.route("/eshexplorer/display_grouper_analysis",methods=["GET","POST"])
+def get_grouper_analysis():
+    j = request.get_json()
+    
+    post_obj = {}
+    pf_names = []
+    subtree = "CLINICAL INFO"
+    maxn = 10 
+    
+    print(j)
+    if "text" in j:
+        text = j["text"]
+        post_obj["text"] = text
+    else:
+        return ""
+    if "powerforms" in j:
+        pf_names = j["powerforms"]
+        print(pf_names)
+        post_obj["powerforms"] = pf_names
+    if "subtree" in j:
+        subtree = j["subtree"]
+    
+    headers = {'Content-Type': 'application/json'}
+    url = "https://halsted.compbio.buffalo.edu/anf_viewer/esh_service"
+    response = requests.post(url,data=json.dumps(post_obj),headers=headers)
+    j = []
+    try: 
+        j = response.json()
+    except:
+        pass
+    groupers = []
+    if "groupers" in j:
+        groupers = j["groupers"]
+
+    output_groupers = groupers[:10]
+    grouper_full = None
+    search_codes = []
+    for result in output_groupers:
+        search_codes.append(result[0])
+
+    grouper_outputs = ""
+    first = True
+    for grouper in groupers:
+        event_sets_out = ""
+        style = ""
+        if first:
+            first = False
+            style = "block"
+        else:
+            style = "none"
+        grouper_code = grouper[0]
+        grouper_name = DESCRIPTIONS[grouper_code] + " [" + grouper_code + "]"
+        for esh_with_codes in grouper[2]:
+            esh = esh_with_codes[0]
+            esh_name = DESCRIPTIONS[esh]
+            link = "<a onclick=\"show_selected_esh_by_id('" + esh + "',null)\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + esh + "%3E)\">" + esh_name + "</a>"
+            child_snomeds = ""
+            for snomed in esh_with_codes[1][0]:
+                child_snomeds += EVENT_SET_SNOMED_TEMPLATE_GREEN.replace("EVENT_SET_SNOMED",snomed)
+            child_pfs = ""
+            for powerform in esh_with_codes[1][2]:
+                if not powerform in R_SECTION_DESCRIPTIONS:
+                    continue
+                powerform_id = R_SECTION_DESCRIPTIONS[powerform]
+                powerform_link = "<a onclick=\"show_selected_powerform_by_name('" + powerform + "',null);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + powerform_id + "%3E)\">" + powerform + "</a>"
+                child_pfs += EVENT_SET_POWERFORM_TEMPLATE_BLUE.replace("EVENT_SET_POWERFORM",powerform_link)
+            for powerform in esh_with_codes[1][3]:
+                if not powerform in R_SECTION_DESCRIPTIONS:
+                    continue
+                powerform_id = R_SECTION_DESCRIPTIONS[powerform]
+                powerform_link = "<a onclick=\"show_selected_powerform_by_name('" + powerform + "',null);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + powerform_id + "%3E)\">" + powerform + "</a>"
+                child_pfs += EVENT_SET_POWERFORM_TEMPLATE.replace("EVENT_SET_POWERFORM",powerform_link)
+            event_sets_out += EVENT_SET_TEMPLATE.replace("EVENT_SET_SNOMEDS",child_snomeds).replace("EVENT_SET_POWERFORMS",child_pfs).replace("EVENT_SET_NAME",link).replace("EVENT_SET_CODE","m"+esh)
+        
+        grouper_outputs += GROUPER_TEMPLATE.replace("EVENT_SETS",event_sets_out).replace("GROUPER_NAME",grouper_name).replace("_STYLE_",style).replace("__ID__",grouper_code)
+    
+
+    return grouper_outputs 
+   
 
 
 if __name__ == "__main__":
