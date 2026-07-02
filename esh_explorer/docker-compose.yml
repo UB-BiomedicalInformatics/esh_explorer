@@ -1,0 +1,5 @@
+
+services:
+  esh-explorer:
+    build: .
+    image: esh-explorer:latest
