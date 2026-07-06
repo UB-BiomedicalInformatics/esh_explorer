@@ -248,7 +248,7 @@ body, html {
 The ESH Explorer is a tool for finding the proper location for a newly proposed Event Set within the
 Event Set Hierarchy and to discover if there is already an existing Event Set that covers the same
 basic concept.</br>
-<a target="blank" href="https://osler.compbio.buffalo.edu/webprotege//#projects/34d96442-3799-4dbc-8551-1d2942c81c08/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC3995585%3E)">Link To WebProtege</a>
+<a target="blank" href="https://osler.compbio.buffalo.edu/webprotege//#projects/23c0f833-978e-414e-ac25-42f570f4b090/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC3995585%3E)">Link To WebProtege</a>
     </div>
 </br>
 </br>
@@ -682,6 +682,15 @@ def get_groupers_list(groupers_list,sub_tree):
         output += "</tr>"
         
     return output
+
+#/(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + p[0] + "%3E)\">" + p[0] + "</a>"
+#/(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC3995585%3E)">Link To WebProtege</a>i
+#/(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/06/P0630%23EC472145007%3E)
+#https://osler.compbio.buffalo.edu/webprotege//#projects/23c0f833-978e-414e-ac25-42f570f4b090/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/06/P0630%23EC366660175%3E)
+#https://osler.compbio.buffalo.edu/webprotege//#projects/23c0f833-978e-414e-ac25-42f570f4b090/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC366660175%3E)
+#https://osler.compbio.buffalo.edu/webprotege//#projects/23c0f833-978e-414e-ac25-42f570f4b090/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/06/P0630%23EC366660175%3E)
+
+
 
 
 def get_dupes_list(dups,subtree):
