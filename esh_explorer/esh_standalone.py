@@ -30,7 +30,6 @@ print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 app = Flask(__name__)
 
 
-#response = requests.get("https://google.com")
 response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_tree_top_descriptions")
 TREE_TOP_DESCRIPTIONS = response.json()
 
@@ -76,68 +75,11 @@ FULL_GROUPER_VALUES = response.json()
 response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_esh_children")
 CHILDREN,PARENTS = response.json()
 
-ESH_PRIMARY = "34d96442-3799-4dbc-8551-1d2942c81c08"
+
+ESH_PRIMARY = "23c0f833-978e-414e-ac25-42f570f4b090"
 SECTION_NAMES = list(R_SECTION_DESCRIPTIONS.keys())
 SECTION_NAMES.sort()
     
-def bolden(code):
-    return "#m" + str(code) + " {\n  font-weight: bold;\n  color: red\n}\n\n" 
-
-def yellowen(code):
-    return "#m" + str(code) + " {\n  font-weight: bold;\n  background-color: yellow\n}\n\n" 
-
-def bolden_parents(codes,boldened):
-    outstring = ""
-    for code in codes:
-        if code in boldened:
-            continue
-        outstring += bolden(code)
-        if code in PARENTS:
-            outstring += bolden_parents(PARENTS[code],boldened)
-        boldened.append(code)
-    return outstring
-
-def yellowen_parents(codes,yellowened):
-    outstring = ""
-    for code in codes:
-        if code in yellowened:
-            continue
-        outstring += yellowen(code)
-        if code in PARENTS:
-            outstring += yellowen_parents(PARENTS[code],yellowened)
-        yellowened.append(code)
-    return outstring
-
-
-    
-def li(description,indent=0):
-  return " " * indent + "<li>\n" + description + " " * indent + "</li>\n"
-
-def span(code,inbed,indent=0):
-    if indent == 0:
-        return " " * indent + "<span class=\"box check-box\" id=\"m" + code + "\">" + inbed + "</span>\n"
-    return " " * indent + "<span class=\"box\" id=\"m" + code + "\">" + inbed + "</span>\n"
-
-def ul(code,inbed, indent=0):
-    return " " * indent + "<ul class=\"nested\" id=\"n" + code + "\">\n" + inbed + " " * indent + "</ul>\n" 
-
-def create_tree(code,indent=0):
-  subs = "" 
-  description = DESCRIPTIONS[code]
-    
-  if code in CHILDREN:
-     childs = list(CHILDREN[code])
-     childs.sort()
-     for child in childs:
-        subs += create_tree(child,indent + 4)
-
-  if subs:
-    subs = ul(code,subs,indent+4)
-    return li(span(code,description,indent+4) + subs,indent+2)
-  else:
-    return " " * (indent + 2) + "<li id=\"m" + code + "\"><button class=\"button\" id=\"m" + code + "\" type=\"submit\" value=\"" + code +"\" name=\"grouper_name\">" + description + "</button></li>\n"
-
-BIG_STRING = create_tree("3995585")
 
 ESH_TEMPLATE = ''' 
 
