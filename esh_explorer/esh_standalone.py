@@ -75,10 +75,12 @@ FULL_GROUPER_VALUES = response.json()
 response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_esh_children")
 CHILDREN,PARENTS = response.json()
 
-
+#https://osler.compbio.buffalo.edu/webprotege//?fragment=projects%2F23c0f833-978e-414e-ac25-42f570f4b090%2Fperspectives%2F69df8fa8-4f84-499e-9341-28eb5085c40b%3Fselection%3DClass(%253Chttp%3A%2F%2Fwww.semanticweb.org%2ForacleRDFBot%2Fontologies%2F2026%2F06%2FP0630%2523EC3995585%253E)
 ESH_PRIMARY = "23c0f833-978e-414e-ac25-42f570f4b090"
 SECTION_NAMES = list(R_SECTION_DESCRIPTIONS.keys())
 SECTION_NAMES.sort()
+
+LINK_TARGET_TEMPLATE = "https://osler.compbio.buffalo.edu/webprotege//?fragment=projects%2F" + ESH_PRIMARY + "%2Fperspectives%2F69df8fa8-4f84-499e-9341-28eb5085c40b%3Fselection%3DClass(%253Chttp%3A%2F%2Fwww.semanticweb.org%2ForacleRDFBot%2Fontologies%2F2026%2F06%2FP0630%2523EC" + "_CODE_" + "%253E)"
     
 
 ESH_TEMPLATE = ''' 
@@ -248,7 +250,7 @@ body, html {
 The ESH Explorer is a tool for finding the proper location for a newly proposed Event Set within the
 Event Set Hierarchy and to discover if there is already an existing Event Set that covers the same
 basic concept.</br>
-<a target="blank" href="https://osler.compbio.buffalo.edu/webprotege//#projects/23c0f833-978e-414e-ac25-42f570f4b090/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC3995585%3E)">Link To WebProtege</a>
+<a target="blank" href="https://osler.compbio.buffalo.edu/webprotege//?fragment=projects%2F23c0f833-978e-414e-ac25-42f570f4b090%2Fperspectives%2F69df8fa8-4f84-499e-9341-28eb5085c40b%3Fselection%3DClass(%253Chttp%3A%2F%2Fwww.semanticweb.org%2ForacleRDFBot%2Fontologies%2F2026%2F06%2FP0630%2523EC3995585%253E)">Link To WebProtege</a>
     </div>
 </br>
 </br>
@@ -675,7 +677,8 @@ def get_groupers_list(groupers_list,sub_tree):
         l = " < ".join(o)
         o.reverse()
         m = " > ".join(o)
-        link = "<a onclick=\"show_grouper(" + p[0] + ")\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + p[0] + "%3E)\">" + p[0] + "</a>"
+        link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",p[0])
+        link = "<a onclick=\"show_grouper(" + p[0] + ")\" target=\"blank\" href=\"" + link_target + "\">" + p[0] + "</a>"
         output += "<tr>"
         output += "<th>" + link + "</th><th>" + grouper_value + "</th><th style=\"text-align: left;\"><div style=\"margin: 4px 2px; border:none; background-color:AliceBlue; cursor:pointer\" class=\"mybutton\" >" + l + "</div>"
         output += "<div style=\"display: none; margin: 4px 2px; border:none; background-color:AliceBlue; cursor:pointer\" class=\"mybutton\" type=\"submit\">" + m + "</div></th>\n"
@@ -717,7 +720,8 @@ def get_dupes_list(dups,subtree):
         l = " < ".join(o)
         o.reverse()
         m = " > ".join(o)
-        link = "<a target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + p[4] + "%3E)\">" + p[0] + "</a>"
+        link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",p[4])
+        link = "<a target=\"blank\" href=\"" + link_target + "\">" + p[0] + "</a>"
         output += "<tr>"
         output += "<th>" + link + "</th><th style=\"text-align: left;\"><div style=\"margin: 4px 2px; border:none; background-color:HoneyDew; cursor:pointer\" class=\"mybutton\" >" + l + "</div>\n"
         output += "<div style=\"display: none; margin: 4px 2px; border:none; background-color:HoneyDew; cursor:pointer\" class=\"mybutton\" >" + m + "</div></th>"
@@ -834,7 +838,8 @@ def get_powerform_info():
         eshs_local[DESCRIPTIONS[esh]] = esh
     esh_names = list(eshs_local.keys())
     esh_names.sort()
-    link = "<a target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + code + "%3E)\">" + powerform + "</a>"
+    link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",code)
+    link = "<a target=\"blank\" href=\"" + link_target + "\">" + powerform + "</a>"
     outstring = ""
     if "row_number" in j:
         outstring += "<tr><th>" + link + "</th></tr>"
@@ -850,7 +855,8 @@ def get_powerform_info():
         if esh in PLACEHOLDERS:
             placeholder_string = "<p style=\"font-size: 9px;\">placeholder</p>"
         outstring += "<th>"
-        link = "<a onclick=\"show_selected_esh_by_id(" + esh + ",this);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + esh + "%3E)\">" + esh_name + "</a>"
+        link_target = LINK_TARGET.replace("_CODE_",esh)
+        link = "<a onclick=\"show_selected_esh_by_id(" + esh + ",this);\" target=\"blank\" href=\"" + link_target + "\">" + esh_name + "</a>"
         outstring += link
         outstring += placeholder_string
         outstring += "</th>"
@@ -883,7 +889,9 @@ def get_esh_info():
    
     if not esh:
         return ""
-    link = "<a target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + esh + "%3E)\">" + esh_name + "</a>"
+    link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",esh)
+
+    link = "<a target=\"blank\" href=\"" + link_target + "\">" + esh_name + "</a>"
     if not esh in esh_to_powerforms_map:
         return "<tr><th>" + link + "</th></tr>"
 
@@ -906,7 +914,8 @@ def get_esh_info():
             outstring += "<tr style=\"background-color: lightblue;\">"
         powerform = powerforms_local[powerform_name]
         outstring += "<th>"
-        link = "<a onclick=\"show_selected_powerform_by_name('" + powerform_name + "',this);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + powerform + "%3E)\">" + powerform_name + "</a>"
+        link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",powerform)
+        link = "<a onclick=\"show_selected_powerform_by_name('" + powerform_name + "',this);\" target=\"blank\" href=\"" + link_target + "\">" + powerform_name + "</a>"
         outstring += link
         outstring += "</th>"
     outstring += "</tr>"
@@ -1067,6 +1076,7 @@ def get_grouper_analysis():
         for esh_with_codes in grouper[2]:
             esh = esh_with_codes[0]
             esh_name = DESCRIPTIONS[esh]
+            link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",esh)
             link = "<a onclick=\"show_selected_esh_by_id('" + esh + "',null)\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23EC" + esh + "%3E)\">" + esh_name + "</a>"
             child_snomeds = ""
             for snomed in esh_with_codes[1][0]:
@@ -1076,13 +1086,15 @@ def get_grouper_analysis():
                 if not powerform in R_SECTION_DESCRIPTIONS:
                     continue
                 powerform_id = R_SECTION_DESCRIPTIONS[powerform]
-                powerform_link = "<a onclick=\"show_selected_powerform_by_name('" + powerform + "',null);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + powerform_id + "%3E)\">" + powerform + "</a>"
+                link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",powerform_id)
+                powerform_link = "<a onclick=\"show_selected_powerform_by_name('" + powerform + "',null);\" target=\"blank\" href=\"" + link_target + "\">" + powerform + "</a>"
                 child_pfs += EVENT_SET_POWERFORM_TEMPLATE_BLUE.replace("EVENT_SET_POWERFORM",powerform_link)
             for powerform in esh_with_codes[1][3]:
                 if not powerform in R_SECTION_DESCRIPTIONS:
                     continue
                 powerform_id = R_SECTION_DESCRIPTIONS[powerform]
-                powerform_link = "<a onclick=\"show_selected_powerform_by_name('" + powerform + "',null);\" target=\"blank\" href=\"https://osler.compbio.buffalo.edu/webprotege//#projects/" + ESH_PRIMARY + "/perspectives/69df8fa8-4f84-499e-9341-28eb5085c40b?selection=Class(%3Chttp://www.semanticweb.org/oracleRDFBot/ontologies/2026/01/P0630%23SC" + powerform_id + "%3E)\">" + powerform + "</a>"
+                link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",powerform_id)
+                powerform_link = "<a onclick=\"show_selected_powerform_by_name('" + powerform + "',null);\" target=\"blank\" href=\"" + link_target + "\">" + powerform + "</a>"
                 child_pfs += EVENT_SET_POWERFORM_TEMPLATE.replace("EVENT_SET_POWERFORM",powerform_link)
             event_sets_out += EVENT_SET_TEMPLATE.replace("EVENT_SET_SNOMEDS",child_snomeds).replace("EVENT_SET_POWERFORMS",child_pfs).replace("EVENT_SET_NAME",link).replace("EVENT_SET_CODE","m"+esh)
         
