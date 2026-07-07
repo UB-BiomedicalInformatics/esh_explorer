@@ -855,7 +855,7 @@ def get_powerform_info():
         if esh in PLACEHOLDERS:
             placeholder_string = "<p style=\"font-size: 9px;\">placeholder</p>"
         outstring += "<th>"
-        link_target = LINK_TARGET.replace("_CODE_",esh)
+        link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",esh)
         link = "<a onclick=\"show_selected_esh_by_id(" + esh + ",this);\" target=\"blank\" href=\"" + link_target + "\">" + esh_name + "</a>"
         outstring += link
         outstring += placeholder_string
