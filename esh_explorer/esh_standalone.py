@@ -80,7 +80,8 @@ ESH_PRIMARY = "23c0f833-978e-414e-ac25-42f570f4b090"
 SECTION_NAMES = list(R_SECTION_DESCRIPTIONS.keys())
 SECTION_NAMES.sort()
 
-LINK_TARGET_TEMPLATE = "https://osler.compbio.buffalo.edu/webprotege//?fragment=projects%2F" + ESH_PRIMARY + "%2Fperspectives%2F69df8fa8-4f84-499e-9341-28eb5085c40b%3Fselection%3DClass(%253Chttp%3A%2F%2Fwww.semanticweb.org%2ForacleRDFBot%2Fontologies%2F2026%2F06%2FP0630%2523EC" + "_CODE_" + "%253E)"
+LINK_TARGET_TEMPLATE = "https://osler.compbio.buffalo.edu/webprotege//?fragment=projects%2F" + ESH_PRIMARY + "%2Fperspectives%2F69df8fa8-4f84-499e-9341-28eb5085c40b%3Fselection%3DClass(%253Chttp%3A%2F%2Fwww.semanticweb.org%2ForacleRDFBot%2Fontologies%2F2026%2F06%2FP0630%2523" + "_CODE_" + "%253E)"
+#https://osler.compbio.buffalo.edu/webprotege//?fragment=projects%2F23c0f833-978e-414e-ac25-42f570f4b090%2Fperspectives%2F69df8fa8-4f84-499e-9341-28eb5085c40b%3Fselection%3DClass(%253Chttp%3A%2F%2Fwww.semanticweb.org%2ForacleRDFBot%2Fontologies%2F2026%2F06%2FP0630%2523SC1182755175%253E)
     
 
 ESH_TEMPLATE = ''' 
@@ -677,7 +678,7 @@ def get_groupers_list(groupers_list,sub_tree):
         l = " < ".join(o)
         o.reverse()
         m = " > ".join(o)
-        link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",p[0])
+        link_target = LINK_TARGET_TEMPLATE.replace("_CODE_","EC" + p[0])
         link = "<a onclick=\"show_grouper(" + p[0] + ")\" target=\"blank\" href=\"" + link_target + "\">" + p[0] + "</a>"
         output += "<tr>"
         output += "<th>" + link + "</th><th>" + grouper_value + "</th><th style=\"text-align: left;\"><div style=\"margin: 4px 2px; border:none; background-color:AliceBlue; cursor:pointer\" class=\"mybutton\" >" + l + "</div>"
@@ -720,7 +721,7 @@ def get_dupes_list(dups,subtree):
         l = " < ".join(o)
         o.reverse()
         m = " > ".join(o)
-        link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",p[4])
+        link_target = LINK_TARGET_TEMPLATE.replace("_CODE_","EC" + p[4])
         link = "<a target=\"blank\" href=\"" + link_target + "\">" + p[0] + "</a>"
         output += "<tr>"
         output += "<th>" + link + "</th><th style=\"text-align: left;\"><div style=\"margin: 4px 2px; border:none; background-color:HoneyDew; cursor:pointer\" class=\"mybutton\" >" + l + "</div>\n"
@@ -838,7 +839,7 @@ def get_powerform_info():
         eshs_local[DESCRIPTIONS[esh]] = esh
     esh_names = list(eshs_local.keys())
     esh_names.sort()
-    link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",code)
+    link_target = LINK_TARGET_TEMPLATE.replace("_CODE_","EC" + code)
     link = "<a target=\"blank\" href=\"" + link_target + "\">" + powerform + "</a>"
     outstring = ""
     if "row_number" in j:
@@ -855,7 +856,7 @@ def get_powerform_info():
         if esh in PLACEHOLDERS:
             placeholder_string = "<p style=\"font-size: 9px;\">placeholder</p>"
         outstring += "<th>"
-        link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",esh)
+        link_target = LINK_TARGET_TEMPLATE.replace("_CODE_","EC" + esh)
         link = "<a onclick=\"show_selected_esh_by_id(" + esh + ",this);\" target=\"blank\" href=\"" + link_target + "\">" + esh_name + "</a>"
         outstring += link
         outstring += placeholder_string
@@ -889,7 +890,7 @@ def get_esh_info():
    
     if not esh:
         return ""
-    link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",esh)
+    link_target = LINK_TARGET_TEMPLATE.replace("_CODE_","EC" + esh)
 
     link = "<a target=\"blank\" href=\"" + link_target + "\">" + esh_name + "</a>"
     if not esh in esh_to_powerforms_map:
@@ -914,7 +915,7 @@ def get_esh_info():
             outstring += "<tr style=\"background-color: lightblue;\">"
         powerform = powerforms_local[powerform_name]
         outstring += "<th>"
-        link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",powerform)
+        link_target = LINK_TARGET_TEMPLATE.replace("_CODE_","SC" + powerform)
         link = "<a onclick=\"show_selected_powerform_by_name('" + powerform_name + "',this);\" target=\"blank\" href=\"" + link_target + "\">" + powerform_name + "</a>"
         outstring += link
         outstring += "</th>"
@@ -1086,14 +1087,14 @@ def get_grouper_analysis():
                 if not powerform in R_SECTION_DESCRIPTIONS:
                     continue
                 powerform_id = R_SECTION_DESCRIPTIONS[powerform]
-                link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",powerform_id)
+                link_target = LINK_TARGET_TEMPLATE.replace("_CODE_","SC" + powerform_id)
                 powerform_link = "<a onclick=\"show_selected_powerform_by_name('" + powerform + "',null);\" target=\"blank\" href=\"" + link_target + "\">" + powerform + "</a>"
                 child_pfs += EVENT_SET_POWERFORM_TEMPLATE_BLUE.replace("EVENT_SET_POWERFORM",powerform_link)
             for powerform in esh_with_codes[1][3]:
                 if not powerform in R_SECTION_DESCRIPTIONS:
                     continue
                 powerform_id = R_SECTION_DESCRIPTIONS[powerform]
-                link_target = LINK_TARGET_TEMPLATE.replace("_CODE_",powerform_id)
+                link_target = LINK_TARGET_TEMPLATE.replace("_CODE_","SC" + powerform_id)
                 powerform_link = "<a onclick=\"show_selected_powerform_by_name('" + powerform + "',null);\" target=\"blank\" href=\"" + link_target + "\">" + powerform + "</a>"
                 child_pfs += EVENT_SET_POWERFORM_TEMPLATE.replace("EVENT_SET_POWERFORM",powerform_link)
             event_sets_out += EVENT_SET_TEMPLATE.replace("EVENT_SET_SNOMEDS",child_snomeds).replace("EVENT_SET_POWERFORMS",child_pfs).replace("EVENT_SET_NAME",link).replace("EVENT_SET_CODE","m"+esh)
