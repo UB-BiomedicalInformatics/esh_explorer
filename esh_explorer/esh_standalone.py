@@ -48,13 +48,6 @@ esh_names = {}
 response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_powerform_to_eshs_map")
 powerform_to_eshs_map = response.json()
 
-if "2654125371" in powerform_to_eshs_map:
-    print(powerform_to_eshs_map["2654125371"] )
-    print("asdfasdfasd")
-
-if "2654125371" in esh_to_powerforms_map:
-    print(esh_to_powerforms_map["2654125371"] )
-    print("asdfasdfadfasdfasdfasdfd")
 
 response = requests.get("https://halsted.compbio.buffalo.edu/anf_viewer/get_r_section_descriptions")
 R_SECTION_DESCRIPTIONS = response.json()
@@ -660,7 +653,6 @@ def get_groupers_list(groupers_list,sub_tree):
     for grouper_entry in corrected_groupers_list:
         grouper = grouper_entry[0]
         grouper_value = str(grouper_entry[-1])
-        print(grouper_value)
         subtree_and_results = None
         subtree_match = None
         for grouper_spec in FULL_GROUPER_VALUES[grouper]:
@@ -829,8 +821,6 @@ def get_powerform_info():
     if "powerform" in j:
         powerform = j["powerform"]
     code = ""
-    print(powerform)
-    print(powerform in R_SECTION_DESCRIPTIONS)
     if powerform and powerform in R_SECTION_DESCRIPTIONS:
         code = R_SECTION_DESCRIPTIONS[powerform]
     eshs = powerform_to_eshs_map[code]
@@ -879,14 +869,8 @@ def get_esh_info():
         esh_name = DESCRIPTIONS[esh] 
     elif "esh_name" in j:
         esh_name = j["esh_name"]
-    print(esh_name)
-    print("#######################")
-    print(j)
-    print("#######################")
-    print(esh_name)
     if not esh:
         esh = esh_names[esh_name]
-    print(esh)
    
     if not esh:
         return ""
@@ -937,8 +921,10 @@ def get_duplicates():
         return ""
     if "powerforms" in j:
         pf_names = j["powerforms"]
-        print(pf_names)
         post_obj["powerforms"] = pf_names
+    if pf_names:
+        pf_codes = get_pfs_codes(pf_names)
+        post_obj["powerforms"] = pf_codes
     if "subtree" in j:
         subtree = j["subtree"]
     else:
@@ -954,17 +940,11 @@ def get_duplicates():
     except:
         pass
     
-    print(post_obj)
     event_sets = []
     if "event_sets" in r:
         event_sets = r["event_sets"]
-    print(r)
-    print(event_sets)
     dup_string = DUPES_TABLE_TEMPLATE.replace("_DUPES_",get_dupes_list(event_sets,subtree))
 
-    print("---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print(dup_string)
     
     return dup_string 
 
@@ -976,7 +956,6 @@ def get_groupers():
     subtree = "CLINICAL INFO"
     maxn = 10 
     
-    print(j)
     if "text" in j:
         text = j["text"]
         post_obj["text"] = text
@@ -984,20 +963,15 @@ def get_groupers():
         return ""
     if "powerforms" in j:
         pf_names = j["powerforms"]
-        print(pf_names)
-        post_obj["powerforms"] = pf_names
+    if pf_names:
+        pf_codes = get_pfs_codes(pf_names)
+        post_obj["powerforms"] = pf_codes
     if "subtree" in j:
         subtree = j["subtree"]
 
     
-    print(text)
     pf_codes = []
-    if pf_names:
-        print("asdfasdfasdf")
-        print(pf_names)
-        pf_codes = get_pfs_codes(pf_names)
         
-    print(subtree)
     if not subtree:
         subtree = "CLINICAL INFO"
     
@@ -1031,7 +1005,6 @@ def get_grouper_analysis():
     subtree = "CLINICAL INFO"
     maxn = 10 
     
-    print(j)
     if "text" in j:
         text = j["text"]
         post_obj["text"] = text
@@ -1039,8 +1012,9 @@ def get_grouper_analysis():
         return ""
     if "powerforms" in j:
         pf_names = j["powerforms"]
-        print(pf_names)
-        post_obj["powerforms"] = pf_names
+    if pf_names:
+        pf_codes = get_pfs_codes(pf_names)
+        post_obj["powerforms"] = pf_codes
     if "subtree" in j:
         subtree = j["subtree"]
     
@@ -1055,12 +1029,7 @@ def get_grouper_analysis():
     groupers = []
     if "groupers" in j:
         groupers = j["groupers"]
-
-    output_groupers = groupers[:10]
-    grouper_full = None
-    search_codes = []
-    for result in output_groupers:
-        search_codes.append(result[0])
+    groupers = groupers[:10]
 
     grouper_outputs = ""
     first = True
