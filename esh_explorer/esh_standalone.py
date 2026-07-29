@@ -665,6 +665,9 @@ def get_groupers_list(groupers_list,sub_tree):
             p = subtree_and_results
         else:
             o = subtree_match
+        if not o:
+            continue
+
         o = p[1:][::2]
         o[0] = o[0] + " [" +  p[0] + "]"
         l = " < ".join(o)
@@ -707,6 +710,8 @@ def get_dupes_list(dups,subtree):
             p = subtree_and_results
         else:
             p = subtree_match
+        if not p:
+            continue
         grouper = p[4]
         o = p[1:][::2]
         o[0] = o[0] + " [" +  p[0] + "]"
