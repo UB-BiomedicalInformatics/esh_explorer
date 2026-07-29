@@ -664,8 +664,8 @@ def get_groupers_list(groupers_list,sub_tree):
         if subtree_and_results:
             p = subtree_and_results
         else:
-            o = subtree_match
-        if not o:
+            p = subtree_match
+        if not p:
             continue
 
         o = p[1:][::2]
