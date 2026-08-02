@@ -934,6 +934,7 @@ def get_duplicates():
         subtree = j["subtree"]
     else:
         subtree = "CLINICAL INFO"
+    post_obj["subtree"] = subtree
 
     headers = {'Content-Type': 'application/json'}
     url = "https://halsted.compbio.buffalo.edu/anf_viewer/esh_service"
@@ -979,14 +980,19 @@ def get_groupers():
         
     if not subtree:
         subtree = "CLINICAL INFO"
+    post_obj["subtree"] = subtree
     
     headers = {'Content-Type': 'application/json'}
+    print(j)
+    print(post_obj)
+    print("$$$$$$$$$$$$$$$$$$$$")
     
     url = "https://halsted.compbio.buffalo.edu/anf_viewer/esh_service"
     response = requests.post(url,data=json.dumps(post_obj),headers=headers)
     j = []
     try: 
         j = response.json()
+        print(j)
     except:
         pass
     groupers = []
@@ -1023,6 +1029,7 @@ def get_grouper_analysis():
     if "subtree" in j:
         subtree = j["subtree"]
     
+    post_obj["subtree"] = subtree
     headers = {'Content-Type': 'application/json'}
     url = "https://halsted.compbio.buffalo.edu/anf_viewer/esh_service"
     response = requests.post(url,data=json.dumps(post_obj),headers=headers)
